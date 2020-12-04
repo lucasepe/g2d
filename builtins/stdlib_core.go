@@ -224,7 +224,7 @@ func Str(_ *object.Environment, args ...object.Object) object.Object {
 		return newError(err.Error())
 	}
 
-	return &object.String{Value: args[0].String()}
+	return &object.String{Value: args[0].Inspect()}
 }
 
 // TypeOf returns a str denoting the type of value: nil, bool, int, float, str, array, hash, or fn.

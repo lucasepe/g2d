@@ -345,7 +345,7 @@ if (10 > 1) {
 		},
 		{
 			"foobar",
-			"identifier not found: foobar",
+			"identifier `foobar` not found",
 		},
 		{
 			`"Hello" - "World"`,
@@ -565,20 +565,7 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`len("∑")`, 1},
 		{`len([1, 2, 3])`, 3},
 		{`len([])`, 0},
-		{`first([1, 2, 3])`, 1},
-		{`first([])`, nil},
-		{`first(1)`, errors.New("TypeError: first() expected argument #1 to be `array` got `int`")},
-		{`last([1, 2, 3])`, 3},
-		{`last([])`, nil},
-		{`last(1)`, errors.New("TypeError: last() expected argument #1 to be `array` got `int`")},
-		{`rest([1, 2, 3])`, []int{2, 3}},
-		{`rest([])`, nil},
-		{`push([], 1)`, []int{1}},
-		{`push(1, 1)`, errors.New("TypeError: push() expected argument #1 to be `array` got `int`")},
-		{`print("Hello World")`, nil},
 		{`input()`, ""},
-		{`pop([])`, errors.New("IndexError: pop from an empty array")},
-		{`pop([1])`, 1},
 		{`bool(1)`, true},
 		{`bool(0)`, false},
 		{`bool(true)`, true},
@@ -600,7 +587,7 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`str(10)`, "10"},
 		{`str("foo")`, "foo"},
 		{`str([1, 2, 3])`, "[1, 2, 3]"},
-		{`str({"a": 1})`, "{\"a\": 1}"},
+		{`str({"a": 1})`, "{a: 1}"},
 	}
 
 	for _, tt := range tests {
@@ -645,43 +632,6 @@ func TestArrayLiterals(t *testing.T) {
 	testIntegerObject(t, result.Elements[0], 1)
 	testIntegerObject(t, result.Elements[1], 4)
 	testIntegerObject(t, result.Elements[2], 6)
-}
-
-func TestArrayDuplication(t *testing.T) {
-	input := "[1] * 3"
-
-	evaluated := testEval(input)
-	result, ok := evaluated.(*object.Array)
-	if !ok {
-		t.Fatalf("object is not Array. got=%T (%+v)", evaluated, evaluated)
-	}
-
-	if len(result.Elements) != 3 {
-		t.Fatalf("array has wrong num of elements. got=%d",
-			len(result.Elements))
-	}
-
-	testIntegerObject(t, result.Elements[0], 1)
-	testIntegerObject(t, result.Elements[1], 1)
-	testIntegerObject(t, result.Elements[2], 1)
-}
-
-func TestArrayMerging(t *testing.T) {
-	input := "[1] + [2]"
-
-	evaluated := testEval(input)
-	result, ok := evaluated.(*object.Array)
-	if !ok {
-		t.Fatalf("object is not Array. got=%T (%+v)", evaluated, evaluated)
-	}
-
-	if len(result.Elements) != 2 {
-		t.Fatalf("array has wrong num of elements. got=%d",
-			len(result.Elements))
-	}
-
-	testIntegerObject(t, result.Elements[0], 1)
-	testIntegerObject(t, result.Elements[1], 2)
 }
 
 func TestArrayIndexExpressions(t *testing.T) {
@@ -766,33 +716,6 @@ func TestHashLiterals(t *testing.T) {
 		(&object.Integer{Value: 4}).HashKey():      4,
 		TRUE.HashKey():                             5,
 		FALSE.HashKey():                            6,
-	}
-
-	if len(result.Pairs) != len(expected) {
-		t.Fatalf("Hash has wrong num of pairs. got=%d", len(result.Pairs))
-	}
-
-	for expectedKey, expectedValue := range expected {
-		pair, ok := result.Pairs[expectedKey]
-		if !ok {
-			t.Errorf("no pair for given key in Pairs")
-		}
-
-		testIntegerObject(t, pair.Value, expectedValue)
-	}
-}
-
-func TestHashMerging(t *testing.T) {
-	input := `{"a": 1} + {"b": 2}`
-	evaluated := testEval(input)
-	result, ok := evaluated.(*object.Hash)
-	if !ok {
-		t.Fatalf("Eval didn't return Hash. got=%T (%+v)", evaluated, evaluated)
-	}
-
-	expected := map[object.HashKey]int64{
-		(&object.String{Value: "a"}).HashKey(): 1,
-		(&object.String{Value: "b"}).HashKey(): 2,
 	}
 
 	if len(result.Pairs) != len(expected) {
@@ -918,7 +841,7 @@ func TestImportSearchPaths(t *testing.T) {
 }
 
 func TestExamples(t *testing.T) {
-	matches, err := filepath.Glob("./examples/*.monkey")
+	matches, err := filepath.Glob("./examples/*.g2d")
 	if err != nil {
 		t.Error(err)
 	}

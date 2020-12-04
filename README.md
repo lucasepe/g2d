@@ -1,3 +1,5 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/lucasepe/g2d)](https://goreportcard.com/report/github.com/lucasepe/g2d) &nbsp;&nbsp;&nbsp; [![Go Coverage](https://gocover.io/_badge/github.com/lucasepe/g2d?nocache=g2d)](https://gocover.io/_badge/github.com/lucasepe/g2d?nocache=g2d)
+
 # `g2D` Programming Language 
 
 **`g2D`** is an educational programming language conceived to: 
@@ -23,6 +25,23 @@ If no script is passed to the interpreter it will open a [REPL](https://en.wikip
 
 ![](./REPL.png)
 
+## Installation
+
+Do you have go already installed?
+
+```bash
+$ go get -u github.com/lucasepe/g2d
+```
+
+## Ready-To-Use Releases 
+
+If you don't want to compile the sourcecode yourself, [Here you can find the tool already compiled](https://github.com/lucasepe/g2d/releases/latest) for:
+
+- MacOS
+- Linux
+- Windows
+
+---
 
 For those who want to see immediately how the language of **`g2D`** feels, here are [some examples](./examples).
 
