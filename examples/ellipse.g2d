@@ -1,4 +1,4 @@
-S := 320
+S := 256
 screensize(S)
 
 pencolor(0, 0, 0, 0.1)

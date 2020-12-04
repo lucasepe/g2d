@@ -14,7 +14,7 @@ poly := fn(n, x, y, r) {
     return res
 }
 
-S := 320
+S := 256
 screensize(S)
 
 coords := poly(5, 0, 0, 0.4*S)

@@ -35,7 +35,7 @@ sierpinski := fn(p0, p1, p2, limit) {
 }
 
 // Canvas size
-S := 320
+S := 256
 screensize(S)
 
 // Triangle side length

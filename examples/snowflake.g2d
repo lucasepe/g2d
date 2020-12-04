@@ -35,9 +35,8 @@ koch := fn(a, b, limit) {
     }
 }
 
-
 // Canvas size
-S := 320
+S := 256
 screensize(S)
 
 // Shape size

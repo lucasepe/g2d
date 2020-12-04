@@ -1,14 +1,8 @@
-
-randomize := fn(min, max) {
-    res := min + randf()*(max-min)
-    return res
-}
-
-S := 320
+S := 256
 screensize(S)
 
 i := 0
-while (i < 300) {
+while (i < 200) {
     x1 := randf(-S/2, S/2)
     y1 := randf(-S/2, S/2)
     

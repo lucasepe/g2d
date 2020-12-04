@@ -1,9 +1,8 @@
-
-S := 320
+S := 250
 screensize(S)
 
 Minor := 10
-Major := 80
+Major := 50
 
 // minor grid
 x := Minor
