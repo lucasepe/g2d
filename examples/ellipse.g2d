@@ -1,0 +1,17 @@
+S := 320
+screensize(S)
+
+pencolor(0, 0, 0, 0.1)
+
+i := 0
+while(i < 360) {
+    saveState()
+    rotate(i)
+    ellipse(0, 0, 0.06*S, 0.4*S)
+    fill()
+    restoreState()
+
+    i = i + 15
+}
+
+snapshot("./examples/ellipse.png")

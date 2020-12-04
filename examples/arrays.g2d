@@ -1,0 +1,12 @@
+// Arrays can hold multiple types
+a := [1, 2.3, "hello!"]
+
+// Adding to an array is done via the `push` builtin function
+a = push(a, "another")
+
+// You can iterate over the contents of an array like so:
+i := 0
+while( i < len(a) ) {
+    print("Array index ", i, " contains ", a[i], "\n")
+    i = i + 1
+}

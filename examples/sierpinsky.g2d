@@ -1,0 +1,65 @@
+// Draw triangle function
+triangle := fn(p0, p1, p2) {
+    saveState()
+    moveTo(p0[0], p0[1])
+    lineTo(p1[0], p1[1])
+    lineTo(p2[0], p2[1])
+    closePath()
+    restoreState()
+}
+
+// Draw Sierpinsky funcion
+sierpinski := fn(p0, p1, p2, limit) {
+    if limit > 0 {
+        // Search the middle point of every line of the triangle
+        xA := (p1[0] + p2[0]) / 2
+        yA := (p1[1] + p2[1]) / 2
+        pA := [xA, yA]
+
+        xB := (p0[0] + p2[0]) / 2
+        yB := (p0[1] + p2[1]) / 2
+        pB := [xB, yB]
+
+        xC := (p0[0] + p1[0]) / 2
+        yC := (p0[1] + p1[1]) / 2
+        pC := [xC, yC]
+
+        // Calls the sierpinski function recursively
+        // Until limit is reached
+        sierpinski(p0, pB, pC, limit - 1)
+        sierpinski(pC, pA, p1, limit - 1)
+        sierpinski(pB, pA, p2, limit - 1)
+    } else {
+        triangle(p0, p1, p2)
+    }
+}
+
+// Canvas size
+S := 320
+screensize(S)
+
+// Triangle side length
+side := 0.9*S
+
+// Triangle Vertices
+pA := [-side/2, -side/2]
+pB := [side/2, -side/2]
+pC := [0, side/2]
+
+// How many recursions?
+deep := 4
+
+// Start iterations
+sierpinski(pA, pB, pC, deep)
+
+// Fill the shape
+pencolor("#0fd5a5")
+fill(true)
+
+// Stroke the lines
+pencolor("#000000")
+pensize(2)
+stroke()
+
+// Save the output
+snapshot("./examples/sierpinsky.png")

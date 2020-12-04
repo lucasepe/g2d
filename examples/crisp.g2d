@@ -1,0 +1,46 @@
+
+S := 320
+screensize(S)
+
+Minor := 10
+Major := 80
+
+// minor grid
+x := Minor
+while (x < S) {
+    fx := x - S/2
+    line(fx, -S/2, fx, S/2)
+    x = x + Minor
+}
+
+y := Minor
+while (y < S) {
+    fy := y - S/2
+    line(-S/2, fy, S/2, fy)
+    y = y + Minor
+}
+
+pensize(1)
+pencolor(0, 0, 0, 0.25)
+stroke()
+
+// major grid
+x := Major
+while (x < S) {
+    fx := x - S/2
+    line(fx, -S/2, fx, S/2)
+    x = x + Major
+}
+
+y := Major
+while (y < S) {
+    fy := y - S/2
+    line(-S/2, fy, S/2, fy)
+    y = y + Major
+}
+
+pensize(1)
+pencolor(0, 0, 0, 0.5)
+stroke()
+
+snapshot("./examples/crisp.png")

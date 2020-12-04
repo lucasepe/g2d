@@ -1,0 +1,27 @@
+
+// Switch and case expressions
+switch n := randi(10) {
+    case n % 2 == 0 {
+        print(n, " is even", "\n")
+    }
+    default {
+        print(n, " is odd", "\n")
+    }
+}
+
+// If-Else statements.
+max := fn(a, b) {
+    if (a > b) {
+        return a;
+    } else {
+        return b;
+    }
+}
+
+print( max(1, 8), "\n" )  // Outputs: 8
+
+i := 30
+while (i > 0) {
+    print(i, " ")
+    i = i - 10
+}

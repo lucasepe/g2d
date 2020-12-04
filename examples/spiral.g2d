@@ -1,0 +1,26 @@
+S := 320
+N := 512
+PI := 3.141592
+
+screensize(S)
+
+pencolor("#000000")
+
+i := 0
+while (i < N) {
+	t := float(i) / float(N)
+	d := t*S*0.4 + 10
+	a := t * PI * 2 * 20
+	
+	x := cos(a)*d
+	y := sin(a)*d
+	r := t * 5
+
+	circle(x, y, r)
+
+	i = i + 1
+}
+
+fill()
+
+snapshot("./examples/spiral.png")

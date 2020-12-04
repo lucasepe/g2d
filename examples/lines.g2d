@@ -1,0 +1,33 @@
+
+randomize := fn(min, max) {
+    res := min + randf()*(max-min)
+    return res
+}
+
+S := 320
+screensize(S)
+
+i := 0
+while (i < 300) {
+    x1 := randf(-S/2, S/2)
+    y1 := randf(-S/2, S/2)
+    
+    x2 := randf(-S/2, S/2)
+    y2 := randf(-S/2, S/2)
+
+    w := randf(1, 5)
+    
+    r := randf()
+    g := randf()
+    b := randf()
+    a := randf()
+
+    line(x1, y1, x2, y2)
+    pensize(w)
+    pencolor(r, g, b, a)
+    stroke()
+
+    i = i + 1
+}
+
+snapshot("./examples/lines.png")

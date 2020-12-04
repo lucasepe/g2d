@@ -1,0 +1,45 @@
+// Define a function `sum` that adds two numbers.
+sum := fn(a, b) { return a + b }
+
+print(sum(5,3), "\n")       // Outputs: 8
+print(sum(2.5,7.5), "\n")   // Outputs: 10
+
+// Functions can be passed as values to others functions
+addTwo := fn(a, b, f) { 
+    return 2 + f(a, b) 
+}
+
+tot := addTwo(68, 1, sum)
+print(tot, "\n")            // Outputs: 71
+
+// Functions inside functions
+multiplier := fn(q) {
+    return fn(x) {
+        return x*q
+    }
+}
+
+multThree := multiplier(3)
+
+print(multThree(2), "\n")  // Outputs: 6
+print(multThree(3), "\n")  // Outputs: 9
+print(multThree(4), "\n")  // Outputs: 12
+
+
+comb := fn(n, k) {
+    if (k > n) {
+        return 0
+    }
+
+    if (k == 0 || k == n) {
+        return 1 
+    }
+    
+    // Recur 
+    a := comb(n - 1, k - 1)
+    b := comb(n - 1, k)
+    
+    return  a + b 
+}
+
+print(comb(10, 4), "\n")
