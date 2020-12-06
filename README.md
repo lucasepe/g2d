@@ -35,7 +35,7 @@ $ go get -u github.com/lucasepe/g2d
 
 ## Ready-To-Use Releases 
 
-If you don't want to compile the sourcecode yourself, [Here you can find the tool already compiled](https://github.com/lucasepe/g2d/releases/latest) for:
+If you don't want to compile the sourcecode yourself, [here you can find the tool already compiled](https://github.com/lucasepe/g2d/releases/latest) for:
 
 - MacOS
 - Linux

@@ -19,6 +19,9 @@ func (f *Float) Compare(other Object) int {
 	if obj, ok := other.(*Float); ok {
 		return big.NewFloat(f.Value).Cmp(big.NewFloat(obj.Value))
 	}
+	if obj, ok := other.(*Integer); ok {
+		return big.NewFloat(f.Value).Cmp(big.NewFloat(float64(obj.Value)))
+	}
 	return -1
 }
 

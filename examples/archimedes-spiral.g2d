@@ -1,0 +1,29 @@
+S := 256
+N := 100
+PI := 3.141592
+
+screensize(S)
+worldcoords(-1000, 1000, -750, 750)
+pencolor("#000000")
+
+point(0, 0, 3)
+fill()
+
+a := 12
+i := 0
+while (i < N) {
+	r := 15*i
+	
+	x := r*cos(i)
+	y := r*sin(i)
+    //printf("x = %.2f, y = %.2f\n", x, y)
+	
+	lineTo(x, y)
+
+	i = i + 0.5
+    print(i, "\n")
+}
+
+stroke()
+
+snapshot("./examples/archimedes.png")

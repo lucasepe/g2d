@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"math"
-	"strings"
 
 	"github.com/lucasepe/g2d/ast"
 	"github.com/lucasepe/g2d/builtins"
@@ -354,18 +353,6 @@ func evalMinusPrefixOperatorExpression(tok token.Token, right object.Object) obj
 
 func evalInfixExpression(tok token.Token, operator string, left, right object.Object) object.Object {
 	switch {
-
-	// " " * 4
-	case operator == "*" && left.Type() == object.STRING && right.Type() == object.INTEGER:
-		leftVal := left.(*object.String).Value
-		rightVal := right.(*object.Integer).Value
-		return &object.String{Value: strings.Repeat(leftVal, int(rightVal))}
-
-	// 4 * " "
-	case operator == "*" && left.Type() == object.INTEGER && right.Type() == object.STRING:
-		leftVal := left.(*object.Integer).Value
-		rightVal := right.(*object.String).Value
-		return &object.String{Value: strings.Repeat(rightVal, int(leftVal))}
 
 	case operator == "==":
 		return fromNativeBoolean(left.(object.Comparable).Compare(right) == 0)

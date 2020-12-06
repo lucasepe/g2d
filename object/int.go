@@ -2,6 +2,7 @@ package object
 
 import (
 	"fmt"
+	"math/big"
 )
 
 // Integer is the integer type used to represent integer literals and holds
@@ -25,6 +26,11 @@ func (i *Integer) Compare(other Object) int {
 			return 0
 		}
 	}
+
+	if obj, ok := other.(*Float); ok {
+		return big.NewFloat(float64(i.Value)).Cmp(big.NewFloat(obj.Value))
+	}
+
 	return -1
 }
 
