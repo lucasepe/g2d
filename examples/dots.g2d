@@ -1,0 +1,64 @@
+polarToCartesian := fn (theta, r) {
+  x := r * cos(theta)
+  y := r * sin(theta)
+  return [x, y]
+}
+
+locate := fn(theta, delta, idx, r) {
+  return polarToCartesian(delta + theta * idx, r);
+}
+
+drawCircles := fn(theta, delta, radius, total) {
+  idx := 0
+  while(idx < total) {
+    loc := locate(theta, delta, idx, radius)
+  
+    point(loc[0], loc[1], 5)
+  
+    idx = idx + 1
+  }
+}
+
+rndColor := fn() {
+    r := randf()
+    g := randf()
+    b := randf()
+    a := randf()
+
+    pencolor(r, g, b, a)
+}
+
+PI := 3.141592
+
+S := 256
+screensize(S)
+
+amp := 0.07*S
+
+iters := [[8, false], [16, false], [16, true], [16, false], [16, true], [16, false]]
+
+circle(0, 0, 10)
+fill()
+
+i := 0
+while (i < len(iters)) {
+    total := iters[i][0]
+    offset := iters[i][1]
+
+    theta := 2 * PI / total
+    radius:= amp * (1 + i)
+    delta := 0
+    if offset == true {
+        delta = theta / 2
+    } 
+    
+    rndColor()
+    drawCircles(theta, delta, radius, total)
+    fill()
+
+    i = i + 1
+}
+
+stroke()
+
+snapshot("./examples/dots.png")
