@@ -1,0 +1,44 @@
+PI := 3.141592
+
+rad := fn(a) {
+    return a * PI / 180
+}
+
+
+rndColor := fn() {
+    r := randf()
+    g := randf()
+    b := randf()
+    a := randf()
+
+    pencolor(r, g, b, a)
+}
+
+heartShape := fn(x0, y0, r) {
+  moveTo(x0, y0)
+  
+  t := 0
+  while(t < 360) {
+    tr := rad(t)
+    x := x0 - 16 * r * sin(tr) *sin(tr) * sin(tr)
+    y := y0 + (13 * r * cos(tr) - 5 * r * cos(2 * tr) - 2 * r * cos(3 * tr) - r * cos(4 * tr))
+
+    lineTo(x, y)
+    t = t + 1
+  }
+}
+
+S := 256
+screensize(S)
+
+
+r := 8
+while(r > 1) {
+    rndColor()
+    heartShape(0, 0, r)
+    fill()
+    snapshot()
+    r = r - 0.5
+}
+
+snapshot("./examples/heart.png")
