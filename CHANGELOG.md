@@ -1,3 +1,15 @@
+0.3.0 (Unreleased)
+
+NEW FEATURES:
+
+- add new examples: spirograph, hypocycloid showing the use of custom function
+
+BUG FIXES:
+
+- Fix redundand rad->degrees conversion in arc and ellipticalarc functions
+
+---
+
 0.2.0 (Mon 7, 2020)
 
 NEW FEATURES:
