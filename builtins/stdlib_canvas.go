@@ -445,17 +445,16 @@ func DrawArc(env *object.Environment, args ...object.Object) object.Object {
 		return newError("TypeError: arc() argument #3 `r` %s", err.Error())
 	}
 
-	deg1, err := typing.ToFloat(args[3])
+	rad1, err := typing.ToFloat(args[3])
 	if err != nil {
 		return newError("TypeError: arc() argument #4 `degrees1` %s", err.Error())
 	}
 
-	deg2, err := typing.ToFloat(args[4])
+	rad2, err := typing.ToFloat(args[4])
 	if err != nil {
 		return newError("TypeError: arc() argument #4 `degrees2` %s", err.Error())
 	}
 
-	rad1, rad2 := gg.Degrees(deg1), gg.Degrees(deg2)
 	env.Canvas().Value.Graphics().DrawArc(x, y, r, rad1, rad2)
 	return &object.Null{}
 }
@@ -487,17 +486,16 @@ func DrawEllipticalArc(env *object.Environment, args ...object.Object) object.Ob
 		return newError("TypeError: ellipticalArc() argument #4 `ry` %s", err.Error())
 	}
 
-	deg1, err := typing.ToFloat(args[4])
+	rad1, err := typing.ToFloat(args[4])
 	if err != nil {
 		return newError("TypeError: ellipticalArc() argument #5 `degrees1` %s", err.Error())
 	}
 
-	deg2, err := typing.ToFloat(args[5])
+	rad2, err := typing.ToFloat(args[5])
 	if err != nil {
 		return newError("TypeError: ellipticalArc() argument #6 `degrees2` %s", err.Error())
 	}
 
-	rad1, rad2 := gg.Degrees(deg1), gg.Degrees(deg2)
 	env.Canvas().Value.Graphics().DrawEllipticalArc(x, y, rx, ry, rad1, rad2)
 	return &object.Null{}
 }

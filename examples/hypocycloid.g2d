@@ -1,0 +1,43 @@
+PI := 3.141592
+
+// https://en.wikipedia.org/wiki/Hypocycloid
+hypocycloid := fn(cx, cy, rMin, rMax) {
+    limit := 2*PI
+    theta := 0
+
+    while(theta <= limit) {
+        dr := rMax - rMin
+        x := cx + dr * cos(theta) + rMin * cos(dr / rMin * theta)
+        y := cy + dr * sin(theta) - rMin * sin(dr / rMin * theta)
+
+        lineTo(x, y)
+
+        stroke(true)
+        snapshot()
+
+        theta = theta + 0.01
+    }
+}
+
+S := 256
+screensize(S)
+
+pencolor("#000000")
+pensize(1)
+
+rMax := 0.40*S
+nrOfCusp := 8
+rMin := rMax / nrOfCusp
+
+//pencolor("#0000ff")
+//pensize(2)
+//arc(0, 0, rMax, 0, 2*PI)
+//stroke()
+
+pencolor("#000000")
+pensize(1)
+hypocycloid(0, 0, rMin, rMax)
+
+stroke()
+
+snapshot("./examples/hypocycloid.png")
