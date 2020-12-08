@@ -12,7 +12,7 @@ func NewEnvironment() *Environment {
 	return &Environment{
 		store: make(map[string]Object),
 		canvas: &Screen{
-			Value: canvas.NewCanvas(),
+			Value: canvas.NewCanvas(1024, 1024),
 		},
 	}
 }

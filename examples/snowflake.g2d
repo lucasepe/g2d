@@ -38,6 +38,9 @@ koch := fn(a, b, limit) {
 // Canvas size
 S := 256
 screensize(S)
+worldcoords(-S/2, S/2,-S/2, S/2)
+pencolor("#ffffff")
+clear()
 
 // Shape size
 side := 0.5*S

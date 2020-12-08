@@ -2,11 +2,21 @@
 
 NEW FEATURES:
 
-- add new examples: spirograph, hypocycloid showing the use of custom function
+- new builtin functions: `radians(angle)` and `degrees(angle)` for angles conversion
+- new builting function: `fontsize([size])` to get or set the current font size
+- new builtin functions: `text(str, x, y, ax, ay)` and `textWrapped(str, x, y, ax, ay, width, lineSpacing, align)`
+- new examples: spirograph, hypocycloid showing the use of custom functions
 
 BUG FIXES:
 
-- Fix redundand rad->degrees conversion in arc and ellipticalarc functions
+- Fix redundand rad->degrees conversion in `arc(...)` and `ellArc(...)` functions
+
+CHANGES:
+
+- `polygon(...)` builtin function now takes angles in radians
+- `arc(...)` builtin function now takes angles in radians
+- `ellArc(...)` builtin function now takes angles in radians
+- `rotate(...)` builtin function now takes angles in radians
 
 ---
 

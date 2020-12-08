@@ -227,3 +227,35 @@ func RandomInt(_ *object.Environment, args ...object.Object) object.Object {
 
 	return &object.Integer{Value: rand.Int63()}
 }
+
+// Radians converts degrees to radians.
+// radians(angle) - angle in degrees is the value that you want to convert
+func Radians(_ *object.Environment, args ...object.Object) object.Object {
+	if err := typing.Check("radians", args, typing.ExactArgs(1)); err != nil {
+		return newError(err.Error())
+	}
+
+	degrees, err := typing.ToFloat(args[0])
+	if err != nil {
+		return newError("TypeError: radians() argument #1 %s", err.Error())
+	}
+
+	res := degrees * math.Pi / 180.0
+	return &object.Float{Value: res}
+}
+
+// Degrees converts radians into degrees.
+// degrees(angle) - angle in radians is the value that you want to convert
+func Degrees(_ *object.Environment, args ...object.Object) object.Object {
+	if err := typing.Check("degrees", args, typing.ExactArgs(1)); err != nil {
+		return newError(err.Error())
+	}
+
+	radians, err := typing.ToFloat(args[0])
+	if err != nil {
+		return newError("TypeError: degrees() argument #1 %s", err.Error())
+	}
+
+	res := radians * 180.0 / math.Pi
+	return &object.Float{Value: res}
+}

@@ -1,5 +1,8 @@
 S := 256
 screensize(S)
+worldcoords(-S/2, S/2,-S/2, S/2)
+pencolor("#ffffff")
+clear()
 
 i := 0
 while (i < 200) {

@@ -23,6 +23,9 @@ spiro := fn(cx, cy, rMin, rMax, ratio) {
 
 S := 256
 screensize(S)
+worldcoords(-S/2, S/2,-S/2, S/2)
+pencolor("#ffffff")
+clear()
 
 pencolor("#000000")
 pensize(2)
@@ -31,4 +34,4 @@ spiro(0, 0, 80, 40, 18)
 
 
 stroke()
-snapshot("./examples/spiro2.png")
+snapshot("./examples/spiro.png")

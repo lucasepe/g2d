@@ -16,6 +16,9 @@ poly := fn(n, x, y, r) {
 
 S := 256
 screensize(S)
+worldcoords(-S/2, S/2,-S/2, S/2)
+pencolor("#ffffff")
+clear()
 
 coords := poly(5, 0, 0, 0.4*S)
 

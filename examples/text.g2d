@@ -1,0 +1,23 @@
+
+S := 256
+screensize(S)
+pencolor("#ffffff")
+clear()
+
+pencolor("#000000")
+pensize(2)
+fontsize(24)
+
+msg := "Welcome to g2D!"
+msgSizes := measureText(msg)
+msgWidth := msgSizes[0]
+msgHeight := msgSizes[1]
+msgX := 50
+msgY := 100
+
+rotate(radians(10))
+rectangle(msgX, msgY, msgWidth, msgHeight)
+stroke()
+text(msg, msgX, msgY, 0, 0)
+
+snapshot("./examples/text.png")

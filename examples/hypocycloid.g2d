@@ -21,6 +21,9 @@ hypocycloid := fn(cx, cy, rMin, rMax) {
 
 S := 256
 screensize(S)
+worldcoords(-S/2, S/2,-S/2, S/2)
+pencolor("#ffffff")
+clear()
 
 pencolor("#000000")
 pensize(1)

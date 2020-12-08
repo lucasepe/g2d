@@ -5,31 +5,41 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/fogleman/gg"
-	"github.com/lucasepe/g2d/canvas"
 	"github.com/lucasepe/g2d/object"
 	"github.com/lucasepe/g2d/typing"
 )
 
 // ScreenSize returns or sets the screen size.
 // screensize() - returns the screen current size.
-// screensize(size) - sets the screen size clearing the screen with the current bgcolor.
+// screensize(size) - sets the screen size.
 func ScreenSize(env *object.Environment, args ...object.Object) object.Object {
-	if err := typing.Check("screensize", args, typing.RangeOfArgs(0, 1)); err != nil {
+	if err := typing.Check("screensize", args, typing.RangeOfArgs(0, 2)); err != nil {
 		return newError(err.Error())
 	}
 
 	if len(args) == 0 {
-		size := env.Canvas().Value.Size()
-		return &object.Integer{Value: int64(size)}
+		w, h := env.Canvas().Value.Size()
+		return &object.Array{
+			Elements: []object.Object{
+				&object.Integer{Value: int64(w)},
+				&object.Integer{Value: int64(h)},
+			},
+		}
 	}
 
-	size, err := typing.ToInt(args[0])
+	w, err := typing.ToInt(args[0])
 	if err != nil {
-		return newError("TypeError: screensize() argument #1 %s", err.Error())
+		return newError("TypeError: screensize() argument #1 `width` %s", err.Error())
 	}
 
-	env.Canvas().Value.Reset(canvas.Size(int64(size)))
+	h := w
+	if len(args) > 1 {
+		if h, err = typing.ToInt(args[0]); err != nil {
+			return newError("TypeError: screensize() argument #2 `height` %s", err.Error())
+		}
+	}
+
+	env.Canvas().Value.Reset(w, h)
 	return &object.Null{}
 }
 
@@ -340,12 +350,11 @@ func DrawRegularPolygon(env *object.Environment, args ...object.Object) object.O
 		return newError("TypeError: polygon() argument #4 `r` %s", err.Error())
 	}
 
-	deg, err := typing.ToFloat(args[4])
+	rad, err := typing.ToFloat(args[4])
 	if err != nil {
 		return newError("TypeError: polygon() argument #5 `deg` %s", err.Error())
 	}
 
-	rad := gg.Radians(deg)
 	dc := env.Canvas().Value.Graphics()
 	dc.DrawRegularPolygon(n, x, y, r, rad)
 
@@ -514,26 +523,70 @@ func ClearPath(env *object.Environment, args ...object.Object) object.Object {
 	return &object.Null{}
 }
 
-/*
-// Text draws the text centered at the current position.
-func Text(env *object.Environment, args ...object.Object) object.Object {
-	if err := typing.Check(
-		"Text", args,
+// DrawStringAnchored draws the specified text at the specified anchor point.
+// The anchor point is x - w * ax, y - h * ay, where w, h is the size of the
+// text. Use ax=0.5, ay=0.5 to center the text at the specified point.
+func DrawStringAnchored(env *object.Environment, args ...object.Object) object.Object {
+	if err := typing.Check("text", args, typing.RangeOfArgs(3, 5)); err != nil {
+		return newError(err.Error())
+	}
+
+	txt, err := typing.ToString(args[0])
+	if err != nil {
+		return newError("TypeError: text() argument #1 `string` %s", err.Error())
+	}
+
+	x, err := typing.ToFloat(args[1])
+	if err != nil {
+		return newError("TypeError: text() argument #2 `x` %s", err.Error())
+	}
+
+	y, err := typing.ToFloat(args[2])
+	if err != nil {
+		return newError("TypeError: text() argument #3 `y` %s", err.Error())
+	}
+
+	ax, ay := 0.5, 0.5
+	if len(args) == 5 {
+		if ax, err = typing.ToFloat(args[3]); err != nil {
+			return newError("TypeError: text() argument #4 `ax` %s", err.Error())
+		}
+
+		if ay, err = typing.ToFloat(args[4]); err != nil {
+			return newError("TypeError: text() argument #5 `ay` %s", err.Error())
+		}
+	}
+
+	dc := env.Canvas().Value.Graphics()
+	dc.Push()
+	dc.DrawStringAnchored(txt, x, y, ax, ay)
+	dc.Pop()
+
+	return &object.Null{}
+}
+
+// MeasureString returns the rendered width and height of the specified text
+// given the current font face.
+func MeasureString(env *object.Environment, args ...object.Object) object.Object {
+	if err := typing.Check("measureText", args,
 		typing.ExactArgs(1),
 		typing.WithTypes(object.STRING),
 	); err != nil {
 		return newError(err.Error())
 	}
 
-	msg := args[0].(*object.String).Value
-	env.Cursor().Value.Text(msg)
-	return &object.Null{}
-}
+	txt, err := typing.ToString(args[0])
+	if err != nil {
+		return newError("TypeError: measureText() argument #1 `str` %s", err.Error())
+	}
 
-// PenUp pulls the pen up – no drawing when moving.
-func PenUp(env *object.Environment, args ...object.Object) object.Object {
-	env.Cursor().Value.Up()
-	return &object.Null{}
+	w, h := env.Canvas().Value.Graphics().MeasureString(txt)
+	return &object.Array{
+		Elements: []object.Object{
+			&object.Float{Value: w},
+			&object.Float{Value: h},
+		},
+	}
 }
 
 // FontSize returns or sets the font size.
@@ -545,7 +598,7 @@ func FontSize(env *object.Environment, args ...object.Object) object.Object {
 	}
 
 	if len(args) == 0 {
-		size := env.Cursor().Value.Canvas().FontSize()
+		size := env.Canvas().Value.FontSize()
 		return &object.Float{Value: size}
 	}
 
@@ -554,10 +607,9 @@ func FontSize(env *object.Environment, args ...object.Object) object.Object {
 		return newError("TypeError: fontsize() argument #1 %s", err.Error())
 	}
 
-	env.Cursor().Value.Canvas().SetFontSize(fs)
+	env.Canvas().Value.SetFontSize(fs)
 	return &object.Null{}
 }
-*/
 
 // Snapshot creates a png image with the current drawings.
 // snapshot() - saves the png image in the source code folder.
@@ -606,21 +658,25 @@ func RestoreState(env *object.Environment, args ...object.Object) object.Object 
 	return &object.Null{}
 }
 
+// Clear fills the entire image with the current color.
+func Clear(env *object.Environment, args ...object.Object) object.Object {
+	env.Canvas().Value.Graphics().Clear()
+	return &object.Null{}
+}
+
 // Rotate updates the current matrix with a anticlockwise rotation.
-// rotate(degrees) - rotation occurs about the origin.
-// rotate(degrees, x, y) - rotation occurs about the specified point.
+// rotate(angle) - rotation occurs about the origin.
+// rotate(angle, x, y) - rotation occurs about the specified point.
 // Angle is specified in degrees.
 func Rotate(env *object.Environment, args ...object.Object) object.Object {
 	if len(args) < 1 {
 		return newError("rotate() expects one or three arguments")
 	}
 
-	deg, err := typing.ToFloat(args[0])
+	rad, err := typing.ToFloat(args[0])
 	if err != nil {
-		return newError("TypeError: rotate() argument #1 `degs` %s", err.Error())
+		return newError("TypeError: rotate() argument #1 `angle` %s", err.Error())
 	}
-
-	rad := gg.Radians(deg)
 
 	if len(args) == 1 {
 		env.Canvas().Value.Graphics().Rotate(rad)
