@@ -51,7 +51,7 @@ For those who want to see immediately how the language of **`g2D`** feels, here 
 
 ![](./examples/ellipse.png) &nbsp; ![](./examples/envelope.png) &nbsp; ![](./examples/dots.png) 
 
-![](./examples/heart.png) &nbsp;  ![](./examples/spiro2.png) &nbsp; ![](./examples/hypocycloid.png) 
+![](./examples/heart.png) &nbsp;  ![](./examples/spiro.png) &nbsp; ![](./examples/hypocycloid.png) 
 
 ## The `g2D` Programming Language Syntax
 
