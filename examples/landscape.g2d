@@ -1,0 +1,56 @@
+
+
+W := 320
+H := 160
+screensize(W, H)
+pencolor("#c2eaeb")
+clear()
+
+// parameters - change to your liking
+STEP_MAX := 2.5
+STEP_CHANGE := 1.0
+HEIGHT_MAX := 0.8*H
+
+// starting conditions
+height := randf(HEIGHT_MAX)
+slope := randf(STEP_MAX) * 2 - STEP_MAX
+
+pencolor("#4e2606")
+pensize(2)
+
+
+x := 0
+while(x < W) {
+    // change height and slope
+    height = height + slope
+    slope = slope + randf(STEP_CHANGE) * 2 - STEP_CHANGE
+
+    // clip height and slope to maximum
+    if slope > STEP_MAX { 
+        slope = STEP_MAX 
+    }
+    
+    if slope < -STEP_MAX { 
+        slope = -STEP_MAX
+    }
+ 
+    if height > HEIGHT_MAX { 
+        height = HEIGHT_MAX
+        slope = -1.0*slope
+    }
+    
+    if height < 0 { 
+        height = 0
+        slope = -1.0*slope
+    }
+      
+    // draw column
+    moveTo(x, H)
+    lineTo(x, H - height)
+    stroke()
+    
+    x = x + 1
+}
+
+
+snapshot("./examples/landscape.png")

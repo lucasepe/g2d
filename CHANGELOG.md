@@ -1,11 +1,13 @@
-0.3.0 (Unreleased)
+0.3.0 (Dec 9, 2020)
 
 NEW FEATURES:
 
-- new builtin functions: `radians(angle)` and `degrees(angle)` for angles conversion
-- new builting function: `fontsize([size])` to get or set the current font size
-- new builtin functions: `text(str, x, y, ax, ay)` and `textWrapped(str, x, y, ax, ay, width, lineSpacing, align)`
+- canvas can be either square or rectangular; use `screensize(W,H)`
+- new builtin math functions: `radians(angle)` and `degrees(angle)` for angles conversion
+- new builtin canvas function: `fontsize([size])` to get or set the current font size
+- new builtin canvas function: `text(str, x, y, ax, ay)` to write text on canvas
 - new examples: spirograph, hypocycloid showing the use of custom functions
+- new example: landscape to show howt to create not only squared images
 
 BUG FIXES:
 
@@ -20,7 +22,7 @@ CHANGES:
 
 ---
 
-0.2.0 (Mon 7, 2020)
+0.2.0 (Dec 7, 2020)
 
 NEW FEATURES:
 

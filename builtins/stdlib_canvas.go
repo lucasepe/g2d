@@ -34,7 +34,7 @@ func ScreenSize(env *object.Environment, args ...object.Object) object.Object {
 
 	h := w
 	if len(args) > 1 {
-		if h, err = typing.ToInt(args[0]); err != nil {
+		if h, err = typing.ToInt(args[1]); err != nil {
 			return newError("TypeError: screensize() argument #2 `height` %s", err.Error())
 		}
 	}
