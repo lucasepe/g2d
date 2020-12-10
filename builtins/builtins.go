@@ -60,6 +60,7 @@ var Builtins = map[string]*object.Builtin{
 	"arc":          &object.Builtin{Name: "arc", Fn: DrawArc},
 	"ellArc":       &object.Builtin{Name: "ellArc", Fn: DrawEllipticalArc},
 	"text":         &object.Builtin{Name: "text", Fn: DrawStringAnchored},
+	"drawImage":    &object.Builtin{Name: "drawImage", Fn: DrawImageAnchored},
 	"measureText":  &object.Builtin{Name: "measureText", Fn: MeasureString},
 	"clearPath":    &object.Builtin{Name: "clearPath", Fn: ClearPath},
 	"closePath":    &object.Builtin{Name: "closePath", Fn: ClosePath},
@@ -71,6 +72,9 @@ var Builtins = map[string]*object.Builtin{
 	"identity":     &object.Builtin{Name: "identity", Fn: Identity},
 
 	"snapshot": &object.Builtin{Name: "snapshot", Fn: Snapshot},
+	"loadPNG":  &object.Builtin{Name: "loadPNG", Fn: LoadPNG},
+	"width":    &object.Builtin{Name: "width", Fn: ImageWidth},
+	"height":   &object.Builtin{Name: "height", Fn: ImageHeight},
 }
 
 // BuiltinsIndex ...

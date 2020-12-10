@@ -1,0 +1,38 @@
+S := 128
+screensize(S)
+
+arrow := fn(x1, y1, x2, y2, size) {
+    dx := x2 - x1
+    dy := y2 - y1
+
+    angle := atan2(dy, dx)
+    dist := hypot(dx, dy)
+
+    saveState()
+    translate(x1, y1)
+    rotate(angle)
+
+    // line
+    moveTo(0, 0)
+    lineTo(dist - size, 0)
+    stroke()
+
+    // triangle
+    moveTo(dist - size, size)
+    lineTo(dist, 0)
+    lineTo(dist - size, -size)
+    fill()
+
+    restoreState()
+}
+
+pensize(4)
+
+l := S/2
+pencolor("#ff0000")
+arrow(l, l, 2*l, l, 10)
+
+pencolor("#00ff00")
+arrow(l, l, l, 2*l, 10)
+
+snapshot("./examples/arrows.png")

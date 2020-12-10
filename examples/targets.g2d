@@ -1,0 +1,28 @@
+// A function that draws concentric circles
+target := fn(x, y, size, num) {
+    gray := 255/num
+    steps := size/num
+
+    i := 0
+    while(i < num) {
+        c := 255-i * gray 
+        pencolor(c, c, c, 1)
+        ellipse(x, y, size - i*steps, size - i*steps)
+        fill()
+        i = i + 1
+    }
+}
+
+// Creates an image that is 480 x 240 pixels
+screensize(640, 360)
+// Clear the screen with the speified color
+pencolor("#333333")
+clear()
+
+// call the target funcion three times
+target(width()*0.20, height()*0.4, 80, 4);
+target(width()*0.5, height()*0.5, 160, 10);
+target(width()*0.75, height()*0.3, 40, 6);
+
+// save the image
+snapshot("./examples/targets.png")

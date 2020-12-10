@@ -2,6 +2,7 @@ package builtins
 
 import (
 	"fmt"
+	"image/png"
 	"os"
 	"path/filepath"
 
@@ -358,6 +359,46 @@ func DrawRegularPolygon(env *object.Environment, args ...object.Object) object.O
 	dc := env.Canvas().Value.Graphics()
 	dc.DrawRegularPolygon(n, x, y, r, rad)
 
+	return &object.Null{}
+}
+
+// DrawImageAnchored draws the specified image at the specified anchor point.
+// The anchor point is x - w * ax, y - h * ay, where w, h is the size of the
+// image. Use ax=0.5, ay=0.5 to center the image at the specified point.
+func DrawImageAnchored(env *object.Environment, args ...object.Object) object.Object {
+	if err := typing.Check("drawImage", args, typing.RangeOfArgs(3, 5)); err != nil {
+		return newError(err.Error())
+	}
+
+	im, err := typing.ToImage(args[0])
+	if err != nil {
+		return newError("TypeError: drawImage() argument #1 %s", err.Error())
+	}
+
+	x, err := typing.ToInt(args[1])
+	if err != nil {
+		return newError("TypeError: drawImage() argument #2 %s", err.Error())
+	}
+
+	y, err := typing.ToInt(args[2])
+	if err != nil {
+		return newError("TypeError: drawImage() argument #3 %s", err.Error())
+	}
+
+	ax, ay := 0.5, 0.5
+	if len(args) == 5 {
+		ax, err = typing.ToFloat(args[3])
+		if err != nil {
+			return newError("TypeError: drawImage() argument #4 %s", err.Error())
+		}
+
+		ay, err = typing.ToFloat(args[4])
+		if err != nil {
+			return newError("TypeError: drawImage() argument #5 %s", err.Error())
+		}
+	}
+
+	env.Canvas().Value.Graphics().DrawImageAnchored(im, x, y, ax, ay)
 	return &object.Null{}
 }
 
@@ -766,6 +807,71 @@ func Translate(env *object.Environment, args ...object.Object) object.Object {
 // This results in no translating, scaling, rotating, or shearing.
 func Identity(env *object.Environment, args ...object.Object) object.Object {
 	env.Canvas().Value.Graphics().Identity()
+	return &object.Null{}
+}
+
+// LoadPNG loads a PNG image file
+func LoadPNG(env *object.Environment, args ...object.Object) object.Object {
+	if err := typing.Check("loadPNG", args,
+		typing.ExactArgs(1), typing.WithTypes(object.STRING),
+	); err != nil {
+		return newError(err.Error())
+	}
+
+	name, err := typing.ToString(args[0])
+	if err != nil {
+		return newError("TypeError: loadPNG() argument #1 %s", err.Error())
+	}
+
+	fd, err := os.Open(name)
+	if err != nil {
+		return newError("loadPNG() - %s", err.Error())
+	}
+	defer fd.Close()
+
+	im, err := png.Decode(fd)
+	if err != nil {
+		return newError("loadPNG() - %s", err.Error())
+	}
+
+	return &object.Image{Value: im}
+}
+
+// ImageWidth returns the image width
+func ImageWidth(env *object.Environment, args ...object.Object) object.Object {
+	if err := typing.Check("width", args, typing.RangeOfArgs(0, 1)); err != nil {
+		return newError(err.Error())
+	}
+
+	if len(args) == 0 {
+		w := env.Canvas().Value.Graphics().Width()
+		return &object.Integer{Value: int64(w)}
+	}
+
+	if args[0].Type() == object.IMAGE {
+		val := args[0].(*object.Image).Value
+		return &object.Integer{Value: int64(val.Bounds().Size().X)}
+	}
+
+	return &object.Null{}
+}
+
+// ImageHeight returns the image height
+func ImageHeight(env *object.Environment, args ...object.Object) object.Object {
+	if err := typing.Check("height", args, typing.RangeOfArgs(0, 1)); err != nil {
+		return newError(err.Error())
+	}
+
+	if len(args) == 0 {
+		h := env.Canvas().Value.Graphics().Height()
+		return &object.Integer{Value: int64(h)}
+	}
+
+	if args[0].Type() == object.IMAGE {
+		val := args[0].(*object.Image).Value
+		return &object.Integer{Value: int64(val.Bounds().Size().Y)}
+	}
+
 	return &object.Null{}
 }
 

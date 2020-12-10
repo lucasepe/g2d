@@ -2,6 +2,7 @@ package typing
 
 import (
 	"fmt"
+	"image"
 	"math"
 
 	"github.com/lucasepe/g2d/object"
@@ -112,4 +113,13 @@ func ToBool(obj object.Object) (bool, error) {
 	}
 
 	return false, fmt.Errorf("expected to be `bool` got `%s`", obj.Type())
+}
+
+func ToImage(obj object.Object) (image.Image, error) {
+	if obj.Type() == object.IMAGE {
+		val := obj.(*object.Image).Value
+		return val, nil
+	}
+
+	return nil, fmt.Errorf("expected to be `image.Image` got `%s`", obj.Type())
 }

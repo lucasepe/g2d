@@ -2,7 +2,7 @@
 
 S := 256
 screensize(S)
-pencolor("#ffffff")
+//pencolor("#ffffff")
 clear()
 
 translate(S/2, S/2)

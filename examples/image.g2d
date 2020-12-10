@@ -1,0 +1,19 @@
+
+im := loadPNG("./examples/arrows.png")
+imW := width(im)
+imH := height(im)
+
+S := 512
+screensize(S)
+pencolor("#ffffff")
+clear()
+
+drawImage(im, 0, 0)
+
+saveState()
+translate(S/2, S/2)
+rotate(radians(10))
+drawImage(im, 0, 0)
+restoreState()
+
+snapshot("./examples/test.png")

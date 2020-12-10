@@ -1,0 +1,27 @@
+
+// Creates an image that is 240 x 120 pixels
+screensize(96, 96)
+// Clear the screen with the speified color
+pencolor("#113333")
+clear()
+
+speed := 2.5
+x := 0.5*width()
+y := 0.5*height()
+r := 10
+
+i := 0
+while(i < 10000) {
+    x = x + randf(-speed, speed)
+    y = y + randf(-speed, speed)
+    ellipse(x, y, r, r)
+    pencolor("#ffffff")
+    fill(true)
+    pencolor("#000000")
+    stroke()
+
+    i = i + 1
+}
+
+// save the image
+snapshot("./examples/randomize.png")

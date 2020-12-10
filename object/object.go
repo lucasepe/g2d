@@ -47,6 +47,9 @@ const (
 
 	// CANVAS is the Canvas object type
 	CANVAS = "canvas"
+
+	// IMAGE is the Image object type
+	IMAGE = "image"
 )
 
 // Comparable is the interface for comparing two Object and their underlying
