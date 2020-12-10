@@ -664,11 +664,11 @@ func Clear(env *object.Environment, args ...object.Object) object.Object {
 	return &object.Null{}
 }
 
-// Rotate updates the current matrix with a anticlockwise rotation.
+// RotateAbout updates the current matrix with a anticlockwise rotation.
 // rotate(angle) - rotation occurs about the origin.
 // rotate(angle, x, y) - rotation occurs about the specified point.
-// Angle is specified in degrees.
-func Rotate(env *object.Environment, args ...object.Object) object.Object {
+// Angle is specified in radians.
+func RotateAbout(env *object.Environment, args ...object.Object) object.Object {
 	if len(args) < 1 {
 		return newError("rotate() expects one or three arguments")
 	}
@@ -701,6 +701,47 @@ func Rotate(env *object.Environment, args ...object.Object) object.Object {
 	return &object.Null{}
 }
 
+// ScaleAbout updates the current matrix with a scaling factor.
+// scale(sx, sy) - scaling occurs about the origin.
+// scale(sx, sy, x, y) - scaling occurs about the specified point.
+func ScaleAbout(env *object.Environment, args ...object.Object) object.Object {
+	if len(args) < 2 {
+		return newError("scale() expects two or four arguments")
+	}
+
+	sx, err := typing.ToFloat(args[0])
+	if err != nil {
+		return newError("TypeError: scale() argument #1 `sx` %s", err.Error())
+	}
+
+	sy, err := typing.ToFloat(args[1])
+	if err != nil {
+		return newError("TypeError: scale() argument #2 `sy` %s", err.Error())
+	}
+
+	if len(args) == 2 {
+		env.Canvas().Value.Graphics().Scale(sx, sy)
+		return &object.Null{}
+	}
+
+	if err := typing.Check("scale", args, typing.ExactArgs(4)); err != nil {
+		return newError(err.Error())
+	}
+
+	x, err := typing.ToFloat(args[2])
+	if err != nil {
+		return newError("TypeError: scale() argument #3 `x` %s", err.Error())
+	}
+
+	y, err := typing.ToFloat(args[3])
+	if err != nil {
+		return newError("TypeError: scale() argument #4 `y` %s", err.Error())
+	}
+
+	env.Canvas().Value.Graphics().ScaleAbout(sx, sy, x, y)
+	return &object.Null{}
+}
+
 // Translate updates the current matrix with a translation.
 func Translate(env *object.Environment, args ...object.Object) object.Object {
 	if err := typing.Check("translate", args, typing.ExactArgs(2)); err != nil {
@@ -718,6 +759,13 @@ func Translate(env *object.Environment, args ...object.Object) object.Object {
 	}
 
 	env.Canvas().Value.Graphics().Translate(x, y)
+	return &object.Null{}
+}
+
+// Identity resets the current transformation matrix to the identity matrix.
+// This results in no translating, scaling, rotating, or shearing.
+func Identity(env *object.Environment, args ...object.Object) object.Object {
+	env.Canvas().Value.Graphics().Identity()
 	return &object.Null{}
 }
 

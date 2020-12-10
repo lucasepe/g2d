@@ -65,8 +65,10 @@ var Builtins = map[string]*object.Builtin{
 	"closePath":    &object.Builtin{Name: "closePath", Fn: ClosePath},
 	"saveState":    &object.Builtin{Name: "saveState", Fn: SaveState},
 	"restoreState": &object.Builtin{Name: "restoreState", Fn: RestoreState},
-	"rotate":       &object.Builtin{Name: "rotate", Fn: Rotate},
+	"rotate":       &object.Builtin{Name: "rotate", Fn: RotateAbout},
+	"scale":        &object.Builtin{Name: "scale", Fn: ScaleAbout},
 	"translate":    &object.Builtin{Name: "translate", Fn: Translate},
+	"identity":     &object.Builtin{Name: "identity", Fn: Identity},
 
 	"snapshot": &object.Builtin{Name: "snapshot", Fn: Snapshot},
 }
