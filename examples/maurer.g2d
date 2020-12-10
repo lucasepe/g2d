@@ -1,0 +1,47 @@
+// https://en.wikipedia.org/wiki/Maurer_rose
+
+S := 256
+screensize(S)
+pencolor("#ffffff")
+clear()
+
+translate(S/2, S/2)
+
+n := 6
+d := 71
+
+pencolor("#0000ff")
+pensize(0.5)
+
+theta := 0
+while (theta <= 360) {
+    k := d * radians(theta)
+    r := 0.5 * S * sin(n * k)
+    x := -r * cos(k)
+    y := -r * sin(k)
+    
+    lineTo(x, y)
+    moveTo(x, y)
+
+    theta = theta + 1
+}
+stroke()
+
+pencolor("#ff0000")
+pensize(2)
+
+theta := 0
+while (theta <= 360) {
+    k := radians(theta)
+    r := 0.5 * S * sin(n * k)
+    x := r * cos(k)
+    y := -r * sin(k)
+    
+    lineTo(x, y)
+    moveTo(x, y)
+
+    theta = theta + 1
+}
+stroke()
+
+snapshot("./examples/maurer.png")

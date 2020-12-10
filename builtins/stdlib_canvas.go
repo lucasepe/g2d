@@ -701,6 +701,26 @@ func Rotate(env *object.Environment, args ...object.Object) object.Object {
 	return &object.Null{}
 }
 
+// Translate updates the current matrix with a translation.
+func Translate(env *object.Environment, args ...object.Object) object.Object {
+	if err := typing.Check("translate", args, typing.ExactArgs(2)); err != nil {
+		return newError(err.Error())
+	}
+
+	x, err := typing.ToFloat(args[0])
+	if err != nil {
+		return newError("TypeError: translate() argument #1 `x` %s", err.Error())
+	}
+
+	y, err := typing.ToFloat(args[1])
+	if err != nil {
+		return newError("TypeError: translate() argument #2 `y` %s", err.Error())
+	}
+
+	env.Canvas().Value.Graphics().Translate(x, y)
+	return &object.Null{}
+}
+
 func mkdir(path string) error {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		return os.Mkdir(path, 0755)
