@@ -1,3 +1,16 @@
+0.4.0 (Unreleased)
+
+NEW FEATURES:
+
+- new object type: `Image`
+- new builtin canvas functions: `width()`, `height()` to query canvas size at runtime
+- new builtin canvas functions: `scale(sx, sy)`, `identity()` as matrix transformations
+- new builtin canvas function: `loadPNG(filename)` to load an external PNG image
+- new builtin canvas function: `drawImage(im, x, y, ax, ay)` to draw a loaded PNG image
+- more examples
+
+---
+
 0.3.0 (Dec 9, 2020)
 
 NEW FEATURES:
