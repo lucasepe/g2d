@@ -1,0 +1,39 @@
+
+// Creates an image that is 640 x 320 pixels
+screensize(640, 320)
+pencolor("#ffffff")
+clear()
+
+s := 0.8 * width() / 2
+r := s / 2
+
+dx := (width() / 2 - s) / 2
+dy := height() / 2 
+
+
+pencolor("#c0c0c0")
+pensize(2)
+arc(dx + r, dy, r, 0, radians(360))
+stroke()
+
+moveTo(dx + r, dy)
+lineTo()
+
+pencolor("#00ff00")
+pensize(12)
+arc(dx + r, dy, r, radians(30), radians(90))
+stroke()
+
+pencolor("#c0c0c0")
+pensize(2)
+arc(3*dx + 3*r, dy, r, 0, radians(360))
+stroke()
+
+pencolor("#ff0000")
+pensize(12)
+arc(3*dx + 3*r, dy, r, radians(90), radians(390))
+stroke()
+
+
+// save the image
+snapshot("./examples/arcs.png")

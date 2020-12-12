@@ -1,11 +1,11 @@
 package object
 
 import (
-	"github.com/lucasepe/g2d/canvas"
+	"github.com/lucasepe/g2d/gg"
 )
 
 type Screen struct {
-	Value *canvas.Canvas
+	Value *gg.Context
 }
 
 func (sc *Screen) String() string { return sc.Inspect() }
@@ -23,3 +23,8 @@ func (sc *Screen) Inspect() string { return "<CANVAS>" }
 //
 // It might also be helpful for embedded users.
 func (sc *Screen) ToInterface() interface{} { return "<CANVAS>" }
+
+// Reset resets screen using the specified options.
+func (sc *Screen) Reset(width, height int) {
+	sc.Value = gg.NewContext(width, height)
+}

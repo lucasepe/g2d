@@ -17,10 +17,10 @@ func (f *Float) Bool() bool {
 
 func (f *Float) Compare(other Object) int {
 	if obj, ok := other.(*Float); ok {
-		return big.NewFloat(f.Value).Cmp(big.NewFloat(obj.Value))
+		return compareFloats(f.Value, obj.Value)
 	}
 	if obj, ok := other.(*Integer); ok {
-		return big.NewFloat(f.Value).Cmp(big.NewFloat(float64(obj.Value)))
+		return compareFloats(f.Value, float64(obj.Value))
 	}
 	return -1
 }
@@ -45,3 +45,7 @@ func (f *Float) Inspect() string { return strconv.FormatFloat(f.Value, 'f', -1, 
 //
 // It might also be helpful for embedded users.
 func (f *Float) ToInterface() interface{} { return f.Value }
+
+func compareFloats(a, b float64) int {
+	return big.NewFloat(a).Cmp(big.NewFloat(b))
+}

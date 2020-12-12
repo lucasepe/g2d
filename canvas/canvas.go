@@ -19,11 +19,12 @@ const (
 
 // Canvas defines a drawing context.
 type Canvas struct {
-	width    int
-	height   int
-	font     *truetype.Font
-	fontSize float64
-	dc       *gg.Context
+	width     int
+	height    int
+	font      *truetype.Font
+	fontSize  float64
+	lineWidth float64
+	dc        *gg.Context
 }
 
 // NewCanvas creates a drawing context.
@@ -52,6 +53,12 @@ func NewCanvas(width, height int) *Canvas {
 
 // Graphics returns the canvas graphic context.
 func (scr *Canvas) Graphics() *gg.Context { return scr.dc }
+
+// SetLineWidth sets the lineWidth.
+func (scr *Canvas) SetLineWidth(size float64) { scr.lineWidth = size }
+
+// LineWidth returns the current line width
+func (scr *Canvas) LineWidth() float64 { return scr.lineWidth }
 
 // SetFontSize sets the font's size.
 func (scr *Canvas) SetFontSize(size float64) {

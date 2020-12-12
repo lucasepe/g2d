@@ -14,18 +14,8 @@ import (
 // screensize() - returns the screen current size.
 // screensize(size) - sets the screen size.
 func ScreenSize(env *object.Environment, args ...object.Object) object.Object {
-	if err := typing.Check("screensize", args, typing.RangeOfArgs(0, 2)); err != nil {
+	if err := typing.Check("screensize", args, typing.ExactArgs(2)); err != nil {
 		return newError(err.Error())
-	}
-
-	if len(args) == 0 {
-		w, h := env.Canvas().Value.Size()
-		return &object.Array{
-			Elements: []object.Object{
-				&object.Integer{Value: int64(w)},
-				&object.Integer{Value: int64(h)},
-			},
-		}
 	}
 
 	w, err := typing.ToInt(args[0])
@@ -40,7 +30,7 @@ func ScreenSize(env *object.Environment, args ...object.Object) object.Object {
 		}
 	}
 
-	env.Canvas().Value.Reset(w, h)
+	env.Canvas().Reset(w, h)
 	return &object.Null{}
 }
 
@@ -61,6 +51,10 @@ func WorldCoords(env *object.Environment, args ...object.Object) object.Object {
 		return newError("TypeError: worldcoords() argument #2 `xMax` %s", err.Error())
 	}
 
+	if xMax <= xMin {
+		return newError("RangeError: worldcoords() xMax must be greater then xMin")
+	}
+
 	yMin, err := typing.ToFloat(args[2])
 	if err != nil {
 		return newError("TypeError: worldcoords() argument #3 `yMin` %s", err.Error())
@@ -71,11 +65,11 @@ func WorldCoords(env *object.Environment, args ...object.Object) object.Object {
 		return newError("TypeError: worldcoords() argument #4 `yMax` %s", err.Error())
 	}
 
-	canvas := env.Canvas().Value
-	if err := canvas.SetWorldCoordinates(xMin, xMax, yMin, yMax); err != nil {
-		return newError(err.Error())
+	if yMax <= yMin {
+		return newError("RangeError: worldcoords() yMax must be greater then yMin")
 	}
 
+	env.Canvas().Value.SetWorldCoordinates(xMin, xMax, yMin, yMax)
 	return &object.Null{}
 }
 
@@ -91,7 +85,7 @@ func PenColor(env *object.Environment, args ...object.Object) object.Object {
 	if len(args) == 1 {
 		if args[0].Type() == object.STRING {
 			color := args[0].(*object.String).Value
-			env.Canvas().Value.Graphics().SetHexColor(color)
+			env.Canvas().Value.SetHexColor(color)
 			return &object.Null{}
 		}
 
@@ -119,13 +113,13 @@ func PenColor(env *object.Environment, args ...object.Object) object.Object {
 
 	switch len(args) {
 	case 3:
-		env.Canvas().Value.Graphics().SetRGB(r, g, b)
+		env.Canvas().Value.SetRGB(r, g, b)
 	case 4:
 		a, err := typing.ToFloat(args[3])
 		if err != nil {
 			return newError("TypeError: pencolor() argument #4 `a` %s", err.Error())
 		}
-		env.Canvas().Value.Graphics().SetRGBA(r, g, b, a)
+		env.Canvas().Value.SetRGBA(r, g, b, a)
 	}
 
 	return &object.Null{}
@@ -143,7 +137,7 @@ func PenSize(env *object.Environment, args ...object.Object) object.Object {
 		return newError("TypeError: pensize() argument #1 %s", err.Error())
 	}
 
-	env.Canvas().Value.Graphics().SetLineWidth(lw)
+	env.Canvas().Value.SetLineWidth(lw)
 	return &object.Null{}
 }
 
@@ -161,9 +155,9 @@ func Stroke(env *object.Environment, args ...object.Object) object.Object {
 	}
 
 	if preserve {
-		env.Canvas().Value.Graphics().StrokePreserve()
+		env.Canvas().Value.StrokePreserve()
 	} else {
-		env.Canvas().Value.Graphics().Stroke()
+		env.Canvas().Value.Stroke()
 	}
 
 	return &object.Null{}
@@ -183,9 +177,9 @@ func Fill(env *object.Environment, args ...object.Object) object.Object {
 	}
 
 	if preserve {
-		env.Canvas().Value.Graphics().FillPreserve()
+		env.Canvas().Value.FillPreserve()
 	} else {
-		env.Canvas().Value.Graphics().Fill()
+		env.Canvas().Value.Fill()
 	}
 
 	return &object.Null{}
@@ -193,7 +187,7 @@ func Fill(env *object.Environment, args ...object.Object) object.Object {
 
 // DrawPoint ...
 func DrawPoint(env *object.Environment, args ...object.Object) object.Object {
-	if err := typing.Check("point", args, typing.ExactArgs(3)); err != nil {
+	if err := typing.Check("point", args, typing.RangeOfArgs(2, 3)); err != nil {
 		return newError(err.Error())
 	}
 
@@ -207,14 +201,15 @@ func DrawPoint(env *object.Environment, args ...object.Object) object.Object {
 		return newError("TypeError: point() argument #2 `y` %s", err.Error())
 	}
 
-	r, err := typing.ToFloat(args[2])
-	if err != nil {
-		return newError("TypeError: point() argument #3 `r` %s", err.Error())
+	r := env.Canvas().Value.LineWidth()
+	if len(args) == 3 {
+		r, err = typing.ToFloat(args[2])
+		if err != nil {
+			return newError("TypeError: point() argument #3 `r` %s", err.Error())
+		}
 	}
 
-	dc := env.Canvas().Value.Graphics()
-	dc.DrawPoint(x, y, r)
-
+	env.Canvas().Value.DrawPoint(x, y, r)
 	return &object.Null{}
 }
 
@@ -239,8 +234,7 @@ func DrawCircle(env *object.Environment, args ...object.Object) object.Object {
 		return newError("TypeError: circle() argument #3 `r` %s", err.Error())
 	}
 
-	dc := env.Canvas().Value.Graphics()
-	dc.DrawCircle(x, y, r)
+	env.Canvas().Value.DrawCircle(x, y, r)
 
 	return &object.Null{}
 }
@@ -267,8 +261,7 @@ func DrawEllipse(env *object.Environment, args ...object.Object) object.Object {
 	}
 
 	if len(args) == 3 {
-		dc := env.Canvas().Value.Graphics()
-		dc.DrawCircle(x, y, rx)
+		env.Canvas().Value.DrawCircle(x, y, rx)
 		return &object.Null{}
 	}
 
@@ -277,16 +270,19 @@ func DrawEllipse(env *object.Environment, args ...object.Object) object.Object {
 		return newError("TypeError: ellipse() argument #4 `ry` %s", err.Error())
 	}
 
-	dc := env.Canvas().Value.Graphics()
-	dc.DrawEllipse(x, y, rx, ry)
+	env.Canvas().Value.DrawEllipse(x, y, rx, ry)
 	return &object.Null{}
 }
 
 // DrawRoundedRectangle draws a (w x h) rectangle with upper left corner located at (x, y).
 // rectangle(x, y, w, h, [r]) if radius `r` is specified, the rectangle will have rounded corners.
 func DrawRoundedRectangle(env *object.Environment, args ...object.Object) object.Object {
-	if err := typing.Check("rectangle", args, typing.RangeOfArgs(4, 5)); err != nil {
+	if err := typing.Check("rectangle", args); err != nil {
 		return newError(err.Error())
+	}
+
+	if len(args) < 4 {
+		return newError("TypeError: rectangle() takes at least 4 arguments, given: %d", len(args))
 	}
 
 	x, err := typing.ToFloat(args[0])
@@ -309,19 +305,40 @@ func DrawRoundedRectangle(env *object.Environment, args ...object.Object) object
 		return newError("TypeError: rectangle() argument #4 `h` %s", err.Error())
 	}
 
-	if len(args) == 4 {
-		dc := env.Canvas().Value.Graphics()
-		dc.DrawRectangle(x, y, w, h)
+	if len(args) == 5 {
+		r, err := typing.ToFloat(args[4])
+		if err != nil {
+			return newError("TypeError: rectangle() argument #5 `r` %s", err.Error())
+		}
+
+		env.Canvas().Value.DrawRoundedRectangle(x, y, w, h, r)
 		return &object.Null{}
 	}
 
-	r, err := typing.ToFloat(args[4])
-	if err != nil {
-		return newError("TypeError: rectangle() argument #5 `r` %s", err.Error())
+	// Let's dance!
+	if len(args) == 8 {
+		tl, err := typing.ToFloat(args[4])
+		if err != nil {
+			return newError("TypeError: rectangle() argument #5 `tl` %s", err.Error())
+		}
+		tr, err := typing.ToFloat(args[5])
+		if err != nil {
+			return newError("TypeError: rectangle() argument #6 `tr` %s", err.Error())
+		}
+		br, err := typing.ToFloat(args[6])
+		if err != nil {
+			return newError("TypeError: rectangle() argument #7 `br` %s", err.Error())
+		}
+		bl, err := typing.ToFloat(args[7])
+		if err != nil {
+			return newError("TypeError: rectangle() argument #8 `bl` %s", err.Error())
+		}
+
+		env.Canvas().Value.DrawRoundedRectangleExtended(x, y, w, h, tl, tr, br, bl)
+		return &object.Null{}
 	}
 
-	dc := env.Canvas().Value.Graphics()
-	dc.DrawRoundedRectangle(x, y, w, h, r)
+	env.Canvas().Value.DrawRectangle(x, y, w, h)
 	return &object.Null{}
 }
 
@@ -356,8 +373,105 @@ func DrawRegularPolygon(env *object.Environment, args ...object.Object) object.O
 		return newError("TypeError: polygon() argument #5 `deg` %s", err.Error())
 	}
 
-	dc := env.Canvas().Value.Graphics()
-	dc.DrawRegularPolygon(n, x, y, r, rad)
+	env.Canvas().Value.DrawRegularPolygon(n, x, y, r, rad)
+	return &object.Null{}
+}
+
+// DrawQuadrilateral draws a quadrilateral, a four sided polygon.
+func DrawQuadrilateral(env *object.Environment, args ...object.Object) object.Object {
+	if err := typing.Check("quad", args, typing.ExactArgs(8)); err != nil {
+		return newError(err.Error())
+	}
+
+	x1, err := typing.ToFloat(args[0])
+	if err != nil {
+		return newError("TypeError: quad() argument #1 `x1` %s", err.Error())
+	}
+
+	y1, err := typing.ToFloat(args[1])
+	if err != nil {
+		return newError("TypeError: quad() argument #2 `y1` %s", err.Error())
+	}
+
+	x2, err := typing.ToFloat(args[2])
+	if err != nil {
+		return newError("TypeError: quad() argument #1 `x2` %s", err.Error())
+	}
+
+	y2, err := typing.ToFloat(args[3])
+	if err != nil {
+		return newError("TypeError: quad() argument #2 `y2` %s", err.Error())
+	}
+
+	x3, err := typing.ToFloat(args[4])
+	if err != nil {
+		return newError("TypeError: quad() argument #1 `x3` %s", err.Error())
+	}
+
+	y3, err := typing.ToFloat(args[5])
+	if err != nil {
+		return newError("TypeError: quad() argument #2 `y3` %s", err.Error())
+	}
+
+	x4, err := typing.ToFloat(args[6])
+	if err != nil {
+		return newError("TypeError: quad() argument #1 `x4` %s", err.Error())
+	}
+
+	y4, err := typing.ToFloat(args[7])
+	if err != nil {
+		return newError("TypeError: quad() argument #2 `y4` %s", err.Error())
+	}
+
+	env.Canvas().Value.DrawQuadrilateral(x1, y1, x2, y2, x3, y3, x4, y4)
+	return &object.Null{}
+}
+
+// DrawTriangle draws a triangle.
+// The first two arguments specify the first point, the middle
+// two arguments specify the second point, and the last two
+// arguments specify the third point.
+func DrawTriangle(env *object.Environment, args ...object.Object) object.Object {
+	if err := typing.Check("triangle", args, typing.ExactArgs(8)); err != nil {
+		return newError(err.Error())
+	}
+
+	x1, err := typing.ToFloat(args[0])
+	if err != nil {
+		return newError("TypeError: triangle() argument #1 `x1` %s", err.Error())
+	}
+
+	y1, err := typing.ToFloat(args[1])
+	if err != nil {
+		return newError("TypeError: triangle() argument #2 `y1` %s", err.Error())
+	}
+
+	x2, err := typing.ToFloat(args[2])
+	if err != nil {
+		return newError("TypeError: triangle() argument #1 `x2` %s", err.Error())
+	}
+
+	y2, err := typing.ToFloat(args[3])
+	if err != nil {
+		return newError("TypeError: triangle() argument #2 `y2` %s", err.Error())
+	}
+
+	x3, err := typing.ToFloat(args[4])
+	if err != nil {
+		return newError("TypeError: triangle() argument #1 `x3` %s", err.Error())
+	}
+
+	y3, err := typing.ToFloat(args[5])
+	if err != nil {
+		return newError("TypeError: triangle() argument #2 `y3` %s", err.Error())
+	}
+
+	dc := env.Canvas().Value
+	dc.NewSubPath()
+	dc.MoveTo(x1, y1)
+	dc.LineTo(x2, y2)
+	dc.LineTo(x3, y3)
+	dc.ClosePath()
 
 	return &object.Null{}
 }
@@ -398,7 +512,7 @@ func DrawImageAnchored(env *object.Environment, args ...object.Object) object.Ob
 		}
 	}
 
-	env.Canvas().Value.Graphics().DrawImageAnchored(im, x, y, ax, ay)
+	env.Canvas().Value.DrawImageAnchored(im, x, y, ax, ay)
 	return &object.Null{}
 }
 
@@ -418,7 +532,7 @@ func MoveTo(env *object.Environment, args ...object.Object) object.Object {
 		return newError("TypeError: moveTo() argument #2 %s", err.Error())
 	}
 
-	env.Canvas().Value.Graphics().MoveTo(x, y)
+	env.Canvas().Value.MoveTo(x, y)
 	return &object.Null{}
 }
 
@@ -439,7 +553,7 @@ func LineTo(env *object.Environment, args ...object.Object) object.Object {
 		return newError("TypeError: lineTo() argument #2 %s", err.Error())
 	}
 
-	env.Canvas().Value.Graphics().LineTo(x, y)
+	env.Canvas().Value.LineTo(x, y)
 	return &object.Null{}
 }
 
@@ -469,7 +583,7 @@ func DrawLine(env *object.Environment, args ...object.Object) object.Object {
 		return newError("TypeError: line() argument #4 `y2` %s", err.Error())
 	}
 
-	env.Canvas().Value.Graphics().DrawLine(x1, y1, x2, y2)
+	env.Canvas().Value.DrawLine(x1, y1, x2, y2)
 	return &object.Null{}
 }
 
@@ -505,7 +619,7 @@ func DrawArc(env *object.Environment, args ...object.Object) object.Object {
 		return newError("TypeError: arc() argument #4 `degrees2` %s", err.Error())
 	}
 
-	env.Canvas().Value.Graphics().DrawArc(x, y, r, rad1, rad2)
+	env.Canvas().Value.DrawArc(x, y, r, rad1, rad2)
 	return &object.Null{}
 }
 
@@ -546,21 +660,20 @@ func DrawEllipticalArc(env *object.Environment, args ...object.Object) object.Ob
 		return newError("TypeError: ellipticalArc() argument #6 `degrees2` %s", err.Error())
 	}
 
-	env.Canvas().Value.Graphics().DrawEllipticalArc(x, y, rx, ry, rad1, rad2)
+	env.Canvas().Value.DrawEllipticalArc(x, y, rx, ry, rad1, rad2)
+	return &object.Null{}
+}
+
+// BeginPath starts a new path.
+func BeginPath(env *object.Environment, args ...object.Object) object.Object {
+	env.Canvas().Value.NewSubPath()
 	return &object.Null{}
 }
 
 // ClosePath adds a line segment from the current point to the beginning
 // of the current subpath. If there is no current point, this is a no-op.
 func ClosePath(env *object.Environment, args ...object.Object) object.Object {
-	env.Canvas().Value.Graphics().ClosePath()
-	return &object.Null{}
-}
-
-// ClearPath clears the current path. There is no current point after this
-// operation.
-func ClearPath(env *object.Environment, args ...object.Object) object.Object {
-	env.Canvas().Value.Graphics().ClearPath()
+	env.Canvas().Value.ClosePath()
 	return &object.Null{}
 }
 
@@ -598,11 +711,7 @@ func DrawStringAnchored(env *object.Environment, args ...object.Object) object.O
 		}
 	}
 
-	dc := env.Canvas().Value.Graphics()
-	dc.Push()
-	dc.DrawStringAnchored(txt, x, y, ax, ay)
-	dc.Pop()
-
+	env.Canvas().Value.DrawStringAnchored(txt, x, y, ax, ay)
 	return &object.Null{}
 }
 
@@ -621,7 +730,7 @@ func MeasureString(env *object.Environment, args ...object.Object) object.Object
 		return newError("TypeError: measureText() argument #1 `str` %s", err.Error())
 	}
 
-	w, h := env.Canvas().Value.Graphics().MeasureString(txt)
+	w, h := env.Canvas().Value.MeasureString(txt)
 	return &object.Array{
 		Elements: []object.Object{
 			&object.Float{Value: w},
@@ -633,13 +742,14 @@ func MeasureString(env *object.Environment, args ...object.Object) object.Object
 // FontSize returns or sets the font size.
 // fontsize() - returns the font current size.
 // fontsize(size) - sets the font current size.
+/* TO FIX
 func FontSize(env *object.Environment, args ...object.Object) object.Object {
 	if err := typing.Check("fontsize", args, typing.RangeOfArgs(0, 1)); err != nil {
 		return newError(err.Error())
 	}
 
 	if len(args) == 0 {
-		size := env.Canvas().Value.FontSize()
+		size := env.Canvas().Value.FontHeight()
 		return &object.Float{Value: size}
 	}
 
@@ -651,6 +761,7 @@ func FontSize(env *object.Environment, args ...object.Object) object.Object {
 	env.Canvas().Value.SetFontSize(fs)
 	return &object.Null{}
 }
+*/
 
 // Snapshot creates a png image with the current drawings.
 // snapshot() - saves the png image in the source code folder.
@@ -661,8 +772,7 @@ func Snapshot(env *object.Environment, args ...object.Object) object.Object {
 
 	if len(args) == 1 {
 		filename := args[0].(*object.String).Value
-		dc := env.Canvas().Value.Graphics()
-		if err := dc.SavePNG(filename); err != nil {
+		if err := env.Canvas().Value.SavePNG(filename); err != nil {
 			return newError(err.Error())
 		}
 
@@ -679,8 +789,7 @@ func Snapshot(env *object.Environment, args ...object.Object) object.Object {
 	filename := filepath.Join(folder,
 		fmt.Sprintf("%s_%03d.png", object.SourceFile, object.SaveCounter))
 
-	dc := env.Canvas().Value.Graphics()
-	if err := dc.SavePNG(filename); err != nil {
+	if err := env.Canvas().Value.SavePNG(filename); err != nil {
 		return newError(err.Error())
 	}
 
@@ -689,19 +798,19 @@ func Snapshot(env *object.Environment, args ...object.Object) object.Object {
 
 // SaveState saves the current state of the canvas by pushin it onto a stack. These can be nested.
 func SaveState(env *object.Environment, args ...object.Object) object.Object {
-	env.Canvas().Value.Graphics().Push()
+	env.Canvas().Value.Push()
 	return &object.Null{}
 }
 
 // RestoreState restores the last saved canvas state from the stack.
 func RestoreState(env *object.Environment, args ...object.Object) object.Object {
-	env.Canvas().Value.Graphics().Pop()
+	env.Canvas().Value.Pop()
 	return &object.Null{}
 }
 
 // Clear fills the entire image with the current color.
 func Clear(env *object.Environment, args ...object.Object) object.Object {
-	env.Canvas().Value.Graphics().Clear()
+	env.Canvas().Value.Clear()
 	return &object.Null{}
 }
 
@@ -720,7 +829,7 @@ func RotateAbout(env *object.Environment, args ...object.Object) object.Object {
 	}
 
 	if len(args) == 1 {
-		env.Canvas().Value.Graphics().Rotate(rad)
+		env.Canvas().Value.Rotate(rad)
 		return &object.Null{}
 	}
 
@@ -738,7 +847,7 @@ func RotateAbout(env *object.Environment, args ...object.Object) object.Object {
 		return newError("TypeError: rotate() argument #3 `y` %s", err.Error())
 	}
 
-	env.Canvas().Value.Graphics().RotateAbout(rad, x, y)
+	env.Canvas().Value.RotateAbout(rad, x, y)
 	return &object.Null{}
 }
 
@@ -761,7 +870,7 @@ func ScaleAbout(env *object.Environment, args ...object.Object) object.Object {
 	}
 
 	if len(args) == 2 {
-		env.Canvas().Value.Graphics().Scale(sx, sy)
+		env.Canvas().Value.Scale(sx, sy)
 		return &object.Null{}
 	}
 
@@ -779,7 +888,7 @@ func ScaleAbout(env *object.Environment, args ...object.Object) object.Object {
 		return newError("TypeError: scale() argument #4 `y` %s", err.Error())
 	}
 
-	env.Canvas().Value.Graphics().ScaleAbout(sx, sy, x, y)
+	env.Canvas().Value.ScaleAbout(sx, sy, x, y)
 	return &object.Null{}
 }
 
@@ -799,14 +908,14 @@ func Translate(env *object.Environment, args ...object.Object) object.Object {
 		return newError("TypeError: translate() argument #2 `y` %s", err.Error())
 	}
 
-	env.Canvas().Value.Graphics().Translate(x, y)
+	env.Canvas().Value.Translate(x, y)
 	return &object.Null{}
 }
 
 // Identity resets the current transformation matrix to the identity matrix.
 // This results in no translating, scaling, rotating, or shearing.
 func Identity(env *object.Environment, args ...object.Object) object.Object {
-	env.Canvas().Value.Graphics().Identity()
+	env.Canvas().Value.Identity()
 	return &object.Null{}
 }
 
@@ -844,7 +953,7 @@ func ImageWidth(env *object.Environment, args ...object.Object) object.Object {
 	}
 
 	if len(args) == 0 {
-		w := env.Canvas().Value.Graphics().Width()
+		w := env.Canvas().Value.Width()
 		return &object.Integer{Value: int64(w)}
 	}
 
@@ -863,7 +972,7 @@ func ImageHeight(env *object.Environment, args ...object.Object) object.Object {
 	}
 
 	if len(args) == 0 {
-		h := env.Canvas().Value.Graphics().Height()
+		h := env.Canvas().Value.Height()
 		return &object.Integer{Value: int64(h)}
 	}
 

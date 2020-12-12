@@ -3,7 +3,7 @@ package object
 import (
 	"unicode"
 
-	"github.com/lucasepe/g2d/canvas"
+	"github.com/lucasepe/g2d/gg"
 )
 
 // NewEnvironment constructs a new Environment object to hold bindings
@@ -12,7 +12,7 @@ func NewEnvironment() *Environment {
 	return &Environment{
 		store: make(map[string]Object),
 		canvas: &Screen{
-			Value: canvas.NewCanvas(1024, 1024),
+			Value: gg.NewContext(1024, 1024),
 		},
 	}
 }

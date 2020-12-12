@@ -1,0 +1,46 @@
+// Creates an image that is 480 x 480 pixels
+screensize(480, 480)
+
+// Clear the image with the white color
+pencolor("#ffffff")
+clear()
+
+sx := 0.8 * width() / 3
+sy := 0.8 * height() / 2
+dx := 0.5 * (width() / 3 - sx) 
+dy := 0.5 * (height() / 2 - sy) 
+
+x := dx
+y := dy
+pencolor("#ff0000")
+rect(x, y, sx, sy)
+fill()
+
+x = x + sx + 2*dx
+pencolor("#00ff00")
+rect(x, y, sx, sy, 15)
+fill()
+
+x = x + sx + 2*dx
+pencolor("#0000ff")
+rect(x, y, sx, sy, 5, 20, 30, 0)
+fill()
+
+x = dx
+y = y + sy + dy
+pencolor("#ff0000")
+rect(x, y, sx, sy, 0.5*sx, 0.5*sx, 0.2*sx, 0.2*sx)
+fill()
+
+x = x + sx + 2*dx
+pencolor("#ff0000")
+rect(x, y, sx, sy, 0.5*sx, 0.5*sx, 0.5*sx, 0.5*sx)
+fill()
+
+x = x + sx + 2*dx
+pencolor("#ff0000")
+rect(x, y, sx, sy, 0, 0.5*sx, 0.5*sx, 0)
+fill()
+
+// save the image
+snapshot("./examples/rect.png")
