@@ -30,7 +30,6 @@ archives:
     amd64: 64-bit
   files:
       - LICENSE
-      - CREDITS
 
 nfpms:
   -
