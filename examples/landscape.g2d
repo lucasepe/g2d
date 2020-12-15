@@ -2,7 +2,7 @@
 
 W := 320
 H := 160
-screensize(W, H)
+size(W, H)
 pencolor("#c2eaeb")
 clear()
 

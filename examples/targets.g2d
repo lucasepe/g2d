@@ -13,9 +13,8 @@ target := fn(x, y, size, num) {
     }
 }
 
-// Creates an image that is 480 x 240 pixels
-screensize(640, 360)
-// Clear the screen with the speified color
+
+size(640, 360)
 pencolor("#333333")
 clear()
 

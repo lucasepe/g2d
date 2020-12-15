@@ -25,19 +25,19 @@ koch := fn(a, b, limit) {
         koch(p2, p3, limit - 1)
         koch(p3, b, limit - 1)
     } else {
-        saveState()
+        push()
         //moveTo(a[0], a[1])
         lineTo(x1, y1)
         lineTo(x2, y2)
         lineTo(x3, y3)
         lineTo(b[0], b[1])
-        restoreState()
+        pop()
     }
 }
 
 // Canvas size
 S := 256
-screensize(S)
+size(S)
 worldcoords(-S/2, S/2,-S/2, S/2)
 pencolor("#ffffff")
 clear()

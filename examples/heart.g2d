@@ -23,7 +23,7 @@ heartShape := fn(x0, y0, r) {
 }
 
 S := 256
-screensize(S)
+size(S)
 worldcoords(-S/2, S/2,-S/2, S/2)
 pencolor("#ffffff")
 clear()

@@ -1,5 +1,5 @@
 S := 256
-screensize(S)
+size(S)
 worldcoords(-S/2, S/2,-S/2, S/2)
 pencolor("#ffffff")
 clear()
@@ -9,11 +9,11 @@ pencolor(0, 0, 0, 0.1)
 
 i := 0
 while(i < 360) {
-    saveState()
+    push()
     rotate(radians(i))
     ellipse(0, 0, 0.06*S, 0.4*S)
     fill()
-    restoreState()
+    pop()
 
     i = i + 15
 }

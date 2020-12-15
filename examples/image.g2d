@@ -4,16 +4,16 @@ imW := width(im)
 imH := height(im)
 
 S := 512
-screensize(S)
+size(S)
 pencolor("#ffffff")
 clear()
 
-drawImage(im, 0, 0)
+image(im, 0, 0)
 
-saveState()
+push()
 translate(S/2, S/2)
 rotate(radians(10))
-drawImage(im, 0, 0)
-restoreState()
+image(im, 0, 0)
+pop()
 
-snapshot("./examples/test.png")
+snapshot("./examples/image.png")

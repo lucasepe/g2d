@@ -1,5 +1,9 @@
 package object
 
+import (
+	"fmt"
+)
+
 // Error is the error type and used to hold a message denoting the details of
 // error encountered. This object is trakced through the evaluator and when
 // encountered stops evaulation of the program or body of a function.
@@ -31,3 +35,9 @@ func (e *Error) Inspect() string { return "ERROR: " + e.Message }
 //
 // It might also be helpful for embedded users.
 func (e *Error) ToInterface() interface{} { return "<ERROR>" }
+
+// NewError builds an error with a custom message
+// Helper function used in all builtins.
+func NewError(format string, a ...interface{}) *Error {
+	return &Error{Message: fmt.Sprintf(format, a...)}
+}

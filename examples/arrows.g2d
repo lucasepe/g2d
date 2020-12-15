@@ -1,5 +1,3 @@
-S := 128
-screensize(S)
 
 arrow := fn(x1, y1, x2, y2, size) {
     dx := x2 - x1
@@ -8,7 +6,7 @@ arrow := fn(x1, y1, x2, y2, size) {
     angle := atan2(dy, dx)
     dist := hypot(dx, dy)
 
-    saveState()
+    push()
     translate(x1, y1)
     rotate(angle)
 
@@ -23,12 +21,14 @@ arrow := fn(x1, y1, x2, y2, size) {
     lineTo(dist - size, -size)
     fill()
 
-    restoreState()
+    pop()
 }
 
-pensize(4)
+size(128)
 
-l := S/2
+l := width() / 2
+
+pensize(4)
 pencolor("#ff0000")
 arrow(l, l, 2*l, l, 10)
 

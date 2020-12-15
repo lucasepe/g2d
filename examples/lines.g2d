@@ -1,5 +1,5 @@
 S := 256
-screensize(S)
+size(S)
 worldcoords(-S/2, S/2,-S/2, S/2)
 pencolor("#ffffff")
 clear()

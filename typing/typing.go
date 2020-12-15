@@ -115,6 +115,34 @@ func ToBool(obj object.Object) (bool, error) {
 	return false, fmt.Errorf("expected to be `bool` got `%s`", obj.Type())
 }
 
+func ToArray(obj object.Object) ([]object.Object, error) {
+	if obj.Type() == object.ARRAY {
+		val := obj.(*object.Array).Elements
+		return val, nil
+	}
+
+	return nil, fmt.Errorf("expected to be `array` got `%s`", obj.Type())
+}
+
+func ToFloatArray(obj object.Object) ([]float64, error) {
+	if obj.Type() == object.ARRAY {
+		val := obj.(*object.Array).Elements
+
+		res := []float64{}
+		for _, el := range val {
+			val, err := ToFloat(el)
+			if err != nil {
+				return nil, err
+			}
+
+			res = append(res, val)
+		}
+		return res, nil
+	}
+
+	return nil, fmt.Errorf("expected to be `array` got `%s`", obj.Type())
+}
+
 func ToImage(obj object.Object) (image.Image, error) {
 	if obj.Type() == object.IMAGE {
 		val := obj.(*object.Image).Value

@@ -1,7 +1,7 @@
 // Creates an image that is 480 x 120 pixels
 W := 480
 H := 120
-screensize(W, H)
+size(W, H)
 
 // Clear the image with the white color
 pencolor("#ffffff")

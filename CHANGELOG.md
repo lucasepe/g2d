@@ -6,8 +6,22 @@ NEW FEATURES:
 - new builtin canvas functions: `width()`, `height()` to query canvas size at runtime
 - new builtin canvas functions: `scale(sx, sy)`, `identity()` as matrix transformations
 - new builtin canvas function: `loadPNG(filename)` to load an external PNG image
-- new builtin canvas function: `drawImage(im, x, y, ax, ay)` to draw a loaded PNG image
-- more examples
+- new builtin canvas function: `image(im, x, y, ax, ay)` to draw a loaded PNG image
+- new builtin canvas functions: `arcTo(x1, y1, x2, y2)` to draw a circular arc on path
+- new builtin canvas functions: `rect(x, y, w, h, tl, tr, br, bl)` to draw a rectangle with different rounded angles
+- new builtin math function: `map(value, start1, stop1, start2, stop2)` to re-map a number from one range to another
+- new builtin math function: `lerp(start, stop, amt)` to calculate a number between two numbers at a specific increment
+- new builtin math function: `min(n1, n2, ...n)` to calculate the minimum of a sequence
+- new builtin math function: `max(n1, n2, ...n)` to calculate the maximum of a sequence
+
+
+BREAKING CHANGES!
+
+- massive code refactory
+- renamed `screensize` function to `size`
+- renamed `rectangle` function to `rect`
+- renamed `saveState` function to `push`
+- renamed `restoreState` function to `pop`
 
 ---
 

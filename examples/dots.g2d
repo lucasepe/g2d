@@ -31,11 +31,10 @@ rndColor := fn() {
 PI := 3.141592
 
 S := 256
-screensize(S)
+size(S)
 worldcoords(-S/2, S/2,-S/2, S/2)
 pencolor("#ffffff")
 clear()
-
 
 amp := 0.07*S
 

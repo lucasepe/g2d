@@ -1,7 +1,7 @@
 // Creates an image that is 480 x 240 pixels
 W := 480
 H := 240
-screensize(W, H)
+size(W, H)
 
 // Clear the image with the white color
 pencolor("#808080")
@@ -13,11 +13,11 @@ pensize(1)
 i := 0
 while(i < height()) {
     pencolor("#81ce0f")
-    rectangle(0, i, width(), 10)
+    rect(0, i, width(), 10)
     fill()
 
     pencolor("#ffffff")
-    rectangle(i, 0, 10, height())
+    rect(i, 0, 10, height())
     fill()
     
     i = i + 20

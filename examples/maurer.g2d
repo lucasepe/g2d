@@ -1,8 +1,8 @@
 // https://en.wikipedia.org/wiki/Maurer_rose
 
 S := 256
-screensize(S)
-//pencolor("#ffffff")
+size(S)
+pencolor("#ffffff")
 clear()
 
 translate(S/2, S/2)

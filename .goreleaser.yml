@@ -2,10 +2,12 @@
 # Make sure to check the documentation at http://goreleaser.com
 # Run locally with: goreleaser --rm-dist --snapshot --skip-publish
 project_name: g2d
+
 before:
   hooks:
     - go mod tidy
     - go mod download
+
 builds:
 - binary: '{{ .ProjectName }}'
   main: ./main.go
@@ -20,15 +22,16 @@ builds:
       - darwin
   goarch:
       - amd64
+
 archives:
 - replacements:
     darwin: macOS
     windows: win
     amd64: 64-bit
-checksum:
-  name_template: 'checksums.txt'
-snapshot:
-  name_template: "{{ .ProjectName }}_{{ .Tag }}"
+  files:
+      - LICENSE
+      - CREDITS
+
 nfpms:
   -
     package_name: g2d
@@ -42,9 +45,15 @@ nfpms:
     formats:
       - deb
       - rpm
-changelog:
-  sort: asc
-  filters:
-    exclude:
-    - '^docs:'
-    - '^test:'
+
+brews:
+  - github:
+      owner: lucasepe
+      name: homebrew-g2d
+    commit_author:
+      name: lucasepe
+      email: lucasepe@gmail.com
+    homepage: 'https://github.com/lucasepe/g2d'
+    description: 'Create beatiful drawings using an adhoc interpreted language'
+    install: |
+      bin.install "g2d"

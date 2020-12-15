@@ -4,84 +4,98 @@ import (
 	"fmt"
 	"sort"
 
+	"github.com/lucasepe/g2d/builtins/calc"
+	"github.com/lucasepe/g2d/builtins/core"
+	"github.com/lucasepe/g2d/builtins/graphics"
 	"github.com/lucasepe/g2d/object"
 )
 
 // Builtins ...
 var Builtins = map[string]*object.Builtin{
 	// Core
-	"args":    &object.Builtin{Name: "args", Fn: Args},
-	"exit":    &object.Builtin{Name: "exit", Fn: Exit},
-	"input":   &object.Builtin{Name: "input", Fn: Input},
-	"print":   &object.Builtin{Name: "print", Fn: Print},
-	"printf":  &object.Builtin{Name: "printf", Fn: Printf},
-	"sprintf": &object.Builtin{Name: "sprintf", Fn: Sprintf},
-	"bool":    &object.Builtin{Name: "bool", Fn: Bool},
-	"float":   &object.Builtin{Name: "float", Fn: Float},
-	"int":     &object.Builtin{Name: "int", Fn: Int},
-	"str":     &object.Builtin{Name: "str", Fn: Str},
-	"len":     &object.Builtin{Name: "len", Fn: Len},
-	"push":    &object.Builtin{Name: "push", Fn: Push},
-	"keys":    &object.Builtin{Name: "keys", Fn: hashKeys},
-	"delete":  &object.Builtin{Name: "delete", Fn: hashDelete},
-	"type":    &object.Builtin{Name: "type", Fn: TypeOf},
+	"args":    &object.Builtin{Name: "args", Fn: core.Args},
+	"exit":    &object.Builtin{Name: "exit", Fn: core.Exit},
+	"input":   &object.Builtin{Name: "input", Fn: core.Input},
+	"print":   &object.Builtin{Name: "print", Fn: core.Print},
+	"printf":  &object.Builtin{Name: "printf", Fn: core.Printf},
+	"sprintf": &object.Builtin{Name: "sprintf", Fn: core.Sprintf},
+	"bool":    &object.Builtin{Name: "bool", Fn: core.Bool},
+	"float":   &object.Builtin{Name: "float", Fn: core.Float},
+	"int":     &object.Builtin{Name: "int", Fn: core.Int},
+	"str":     &object.Builtin{Name: "str", Fn: core.Str},
+	"len":     &object.Builtin{Name: "len", Fn: core.Len},
+	"append":  &object.Builtin{Name: "append", Fn: core.Append},
+	"keys":    &object.Builtin{Name: "keys", Fn: core.Keys},
+	"delete":  &object.Builtin{Name: "delete", Fn: core.Delete},
+	"type":    &object.Builtin{Name: "type", Fn: core.TypeOf},
 
-	// Math
-	"abs":     &object.Builtin{Name: "abs", Fn: Abs},
-	"atan":    &object.Builtin{Name: "atan", Fn: Atan},
-	"atan2":   &object.Builtin{Name: "atan2", Fn: Atan2},
-	"cos":     &object.Builtin{Name: "cos", Fn: Cos},
-	"hypot":   &object.Builtin{Name: "hypot", Fn: Hypot},
-	"pow":     &object.Builtin{Name: "pow", Fn: Pow},
-	"sin":     &object.Builtin{Name: "sin", Fn: Sin},
-	"sqrt":    &object.Builtin{Name: "sqrt", Fn: Sqrt},
-	"randf":   &object.Builtin{Name: "randf", Fn: RandomFloat},
-	"randi":   &object.Builtin{Name: "randi", Fn: RandomInt},
-	"radians": &object.Builtin{Name: "radians", Fn: Radians},
-	"degrees": &object.Builtin{Name: "degrees", Fn: Degrees},
+	// Calculation
+	"abs":     &object.Builtin{Name: "abs", Fn: calc.Abs},
+	"atan":    &object.Builtin{Name: "atan", Fn: calc.Atan},
+	"atan2":   &object.Builtin{Name: "atan2", Fn: calc.Atan2},
+	"cos":     &object.Builtin{Name: "cos", Fn: calc.Cos},
+	"degrees": &object.Builtin{Name: "degrees", Fn: calc.Degrees},
+	"hypot":   &object.Builtin{Name: "hypot", Fn: calc.Hypot},
+	"lerp":    &object.Builtin{Name: "lerp", Fn: calc.Lerp},
+	"map":     &object.Builtin{Name: "map", Fn: calc.Map},
+	"max":     &object.Builtin{Name: "max", Fn: calc.Max},
+	"min":     &object.Builtin{Name: "min", Fn: calc.Min},
+	"pow":     &object.Builtin{Name: "pow", Fn: calc.Pow},
+	"radians": &object.Builtin{Name: "radians", Fn: calc.Radians},
+	"randf":   &object.Builtin{Name: "randf", Fn: calc.RandomFloat},
+	"randi":   &object.Builtin{Name: "randi", Fn: calc.RandomInt},
+	"sin":     &object.Builtin{Name: "sin", Fn: calc.Sin},
+	"sqrt":    &object.Builtin{Name: "sqrt", Fn: calc.Sqrt},
 
-	// Canvas
-	"screensize":  &object.Builtin{Name: "screensize", Fn: ScreenSize},
-	"clear":       &object.Builtin{Name: "clear", Fn: Clear},
-	"worldcoords": &object.Builtin{Name: "worldcoords", Fn: WorldCoords},
-	"pencolor":    &object.Builtin{Name: "pencolor", Fn: PenColor},
-	"pensize":     &object.Builtin{Name: "pensize", Fn: PenSize},
-	//"fontsize":    &object.Builtin{Name: "fontsize", Fn: FontSize},
-	"stroke": &object.Builtin{Name: "stroke", Fn: Stroke},
-	"fill":   &object.Builtin{Name: "fill", Fn: Fill},
+	// Graphic Context
+	"size":        &object.Builtin{Name: "size", Fn: graphics.Size},
+	"clear":       &object.Builtin{Name: "clear", Fn: graphics.Clear},
+	"dashes":      &object.Builtin{Name: "dashes", Fn: graphics.Dashes},
+	"pencolor":    &object.Builtin{Name: "pencolor", Fn: graphics.PenColor},
+	"pensize":     &object.Builtin{Name: "pensize", Fn: graphics.PenSize},
+	"xpos":        &object.Builtin{Name: "xpos", Fn: graphics.GetCurrentX},
+	"ypos":        &object.Builtin{Name: "ypos", Fn: graphics.GetCurrentY},
+	"snapshot":    &object.Builtin{Name: "snapshot", Fn: graphics.Snapshot},
+	"width":       &object.Builtin{Name: "width", Fn: graphics.Width},
+	"height":      &object.Builtin{Name: "height", Fn: graphics.Height},
+	"push":        &object.Builtin{Name: "push", Fn: graphics.Push},
+	"pop":         &object.Builtin{Name: "pop", Fn: graphics.Pop},
+	"stroke":      &object.Builtin{Name: "stroke", Fn: graphics.Stroke},
+	"fill":        &object.Builtin{Name: "fill", Fn: graphics.Fill},
+	"worldcoords": &object.Builtin{Name: "worldcoords", Fn: graphics.WorldCoords},
 
-	"polygon": &object.Builtin{Name: "polygon", Fn: DrawRegularPolygon},
-	"moveTo":  &object.Builtin{Name: "moveTo", Fn: MoveTo},
-	"lineTo":  &object.Builtin{Name: "lineTo", Fn: LineTo},
+	// Path
+	"beginPath":        &object.Builtin{Name: "beginPath", Fn: graphics.BeginPath},
+	"closePath":        &object.Builtin{Name: "closePath", Fn: graphics.ClosePath},
+	"quadraticCurveTo": &object.Builtin{Name: "quadraticCurveTo", Fn: graphics.QuadraticCurveTo},
+	"arcTo":            &object.Builtin{Name: "arcTo", Fn: graphics.ArcTo},
+	"lineTo":           &object.Builtin{Name: "lineTo", Fn: graphics.LineTo},
+	"moveTo":           &object.Builtin{Name: "moveTo", Fn: graphics.MoveTo},
+	"routeTo":          &object.Builtin{Name: "routeTo", Fn: graphics.RouteTo},
 
-	"ellArc":      &object.Builtin{Name: "ellArc", Fn: DrawEllipticalArc},
-	"text":        &object.Builtin{Name: "text", Fn: DrawStringAnchored},
-	"drawImage":   &object.Builtin{Name: "drawImage", Fn: DrawImageAnchored},
-	"measureText": &object.Builtin{Name: "measureText", Fn: MeasureString},
-
-	"beginPath":    &object.Builtin{Name: "beginPath", Fn: BeginPath},
-	"closePath":    &object.Builtin{Name: "closePath", Fn: ClosePath},
-	"saveState":    &object.Builtin{Name: "saveState", Fn: SaveState},
-	"restoreState": &object.Builtin{Name: "restoreState", Fn: RestoreState},
-	"rotate":       &object.Builtin{Name: "rotate", Fn: RotateAbout},
-	"scale":        &object.Builtin{Name: "scale", Fn: ScaleAbout},
-	"translate":    &object.Builtin{Name: "translate", Fn: Translate},
-	"identity":     &object.Builtin{Name: "identity", Fn: Identity},
+	// Transform
+	"rotate":    &object.Builtin{Name: "rotate", Fn: graphics.RotateAbout},
+	"scale":     &object.Builtin{Name: "scale", Fn: graphics.ScaleAbout},
+	"translate": &object.Builtin{Name: "translate", Fn: graphics.Translate},
+	"identity":  &object.Builtin{Name: "identity", Fn: graphics.Identity},
 
 	// 2D Primitives
-	"arc":      &object.Builtin{Name: "arc", Fn: DrawArc},
-	"circle":   &object.Builtin{Name: "circle", Fn: DrawCircle},
-	"ellipse":  &object.Builtin{Name: "ellipse", Fn: DrawEllipse},
-	"line":     &object.Builtin{Name: "line", Fn: DrawLine},
-	"point":    &object.Builtin{Name: "point", Fn: DrawPoint},
-	"quad":     &object.Builtin{Name: "quad", Fn: DrawQuadrilateral},
-	"rect":     &object.Builtin{Name: "rect", Fn: DrawRoundedRectangle},
-	"triangle": &object.Builtin{Name: "triangle", Fn: DrawTriangle},
+	"arc":      &object.Builtin{Name: "arc", Fn: graphics.Arc},
+	"circle":   &object.Builtin{Name: "circle", Fn: graphics.Circle},
+	"ellipse":  &object.Builtin{Name: "ellipse", Fn: graphics.Ellipse},
+	"line":     &object.Builtin{Name: "line", Fn: graphics.Line},
+	"point":    &object.Builtin{Name: "point", Fn: graphics.Point},
+	"quad":     &object.Builtin{Name: "quad", Fn: graphics.Quad},
+	"rect":     &object.Builtin{Name: "rect", Fn: graphics.Rect},
+	"triangle": &object.Builtin{Name: "triangle", Fn: graphics.Triangle},
 
-	"snapshot": &object.Builtin{Name: "snapshot", Fn: Snapshot},
-	"loadPNG":  &object.Builtin{Name: "loadPNG", Fn: LoadPNG},
-	"width":    &object.Builtin{Name: "width", Fn: ImageWidth},
-	"height":   &object.Builtin{Name: "height", Fn: ImageHeight},
+	// Text
+	"text":      &object.Builtin{Name: "text", Fn: graphics.Text},
+	"textWidth": &object.Builtin{Name: "textWidth", Fn: graphics.TextWidth},
+
+	// Images
+	"loadPNG": &object.Builtin{Name: "loadPNG", Fn: graphics.LoadPNG},
+	"image":   &object.Builtin{Name: "image", Fn: graphics.ImageAnchored},
 }
 
 // BuiltinsIndex ...

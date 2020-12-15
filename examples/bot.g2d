@@ -1,9 +1,8 @@
 
-// Creates an image that is 256 x 256 pixels
-S := 128
-screensize(S)
 
 drawSide := fn(color1, color2, color3) {
+    S := min(width(), height())
+
     lineTo(-S/2, 0)
     lineTo(-S/5, -S/5)
     lineTo(0, 0)
@@ -26,7 +25,9 @@ drawSide := fn(color1, color2, color3) {
 }
 
 drawEye := fn(color) {
+    S := min(width(), height())
     l := -S/9
+
     moveTo(-l, 0)
     lineTo(0, -l)
     lineTo(l, 0)
@@ -36,38 +37,41 @@ drawEye := fn(color) {
     fill()
 }
 
-translate(0.5*S, 0.5*S)
+size(128)
+
+translate(0.5*width(), 0.5*height())
 
 // draw a piece in the 4 quadrant
 drawSide("#4e78bf", "#082e70", null)
 
 // flip over the y-axis
-saveState()
+push()
 scale(-1, 1)
 drawSide("#4e78bf", "#4e78bf", "#082e70")
-restoreState()
+pop()
 
 // flip over both axis
-saveState()
+push()
 scale(-1, -1)
 drawSide("#082e70", "#4e78bf", null)
-restoreState()
+pop()
 
 // flip over the x-axis
-saveState()
+push()
 scale(1, -1)
 drawSide("#082e70", "#082e70", "#4e78bf")
-restoreState()
+pop()
 
 drawEye("#fdff8c")
-saveState()
+push()
 scale(0.7, 0.7)
 drawEye("#1d338c")
-restoreState()
-saveState()
+pop()
+
+push()
 scale(0.4, 0.4)
 drawEye("#f3f6d2")
-restoreState()
+pop()
 
 
 // save the image

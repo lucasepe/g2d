@@ -2,7 +2,7 @@ S := 256
 N := 512
 PI := 3.141592
 
-screensize(S)
+size(S)
 worldcoords(-S/2, S/2,-S/2, S/2)
 pencolor("#ffffff")
 clear()

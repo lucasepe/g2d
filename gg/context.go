@@ -96,7 +96,8 @@ func NewContextForImage(im image.Image) *Context {
 func NewContextForRGBA(im *image.RGBA) *Context {
 	w := im.Bounds().Size().X
 	h := im.Bounds().Size().Y
-	return &Context{
+
+	res := &Context{
 		width:         w,
 		height:        h,
 		rasterizer:    raster.NewRasterizer(w, h),
@@ -110,6 +111,15 @@ func NewContextForRGBA(im *image.RGBA) *Context {
 		fontHeight:    13,
 		matrix:        Identity(),
 	}
+
+	/*
+		if font, err := truetype.Parse(goregular.TTF); err == nil {
+			res.fontHeight = 13
+			res.fontFace = truetype.NewFace(font, &truetype.Options{Size: res.fontHeight})
+		}
+	*/
+
+	return res
 }
 
 // GetCurrentPoint will return the current point and if there is a current point.

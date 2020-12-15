@@ -1,7 +1,5 @@
 
-// Creates an image that is 240 x 120 pixels
-screensize(96, 96)
-// Clear the screen with the speified color
+size(96, 96)
 pencolor("#113333")
 clear()
 

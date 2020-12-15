@@ -1,11 +1,11 @@
 // Draw triangle function
 triangle := fn(p0, p1, p2) {
-    saveState()
+    push()
     moveTo(p0[0], p0[1])
     lineTo(p1[0], p1[1])
     lineTo(p2[0], p2[1])
     closePath()
-    restoreState()
+    pop()
 }
 
 // Draw Sierpinsky funcion
@@ -36,7 +36,7 @@ sierpinski := fn(p0, p1, p2, limit) {
 
 // Canvas size
 S := 256
-screensize(S)
+size(S)
 worldcoords(-S/2, S/2,-S/2, S/2)
 pencolor("#ffffff")
 clear()

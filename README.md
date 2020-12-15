@@ -119,7 +119,7 @@ b := [false, true, "Hello World", 3, 3.13]
 Adding to an array is done via the `push` builtin function:
 
 ```go
-a = push(a, "another")
+a = append(a, "another")
 ```
 
 You can iterate over the contents of an array like so:
@@ -283,7 +283,7 @@ Function               | Description
 `int(val)`             | converts decimal value str to _int_ - if _val_ is invalid returns _null_   |
 `str(val)`             | returns the string representation of _val_                                 |
 `len(iterable)`        | returns the length of the iterable (_string_, _array_ or _hash_)           |
-`push(array, val)`     | returns a new array with value pushed onto the end of array                |
+`append(array, val)`   | returns a new array with value pushed onto the end of array                |
 `keys(hash)`           | returns the keys of the specified hash                                     |
 `delete(hash, key)`    | returns a new has with the given key deleted                               |
 
@@ -308,28 +308,25 @@ The canvas is always square.
 
 Function                              | Description
 ------------------------------------- | ------------------------------------------------------------------------------------- | 
-`screensize([w,h])`                   | when only _w_ is specified creates a squared canvas<br/>when both _w_ and _h_ are specified creates a rectangular canvas<br/> otherwise returns the screen size |
+`size([w,h])`                         | when only _w_ is specified creates a squared canvas<br/>when both _w_ and _h_ are specified creates a rectangular canvas<br/> otherwise returns the screen size |
 `worldcoords(xMin, xMax, yMin, yMax)` | sets up user-defined coordinate system; performs a screen reset (drawings are cleared)|
 `pencolor(hexcolor)`                  | sets the pen color to the specified _hexcolor_; example `pencolor("#ff0000")`         |
 `pencolor(r, g, b, [a])`              | sets the pen color to _r,g,b,a_ values - should be between 0 and 1, inclusive         |
 `pensize(width)`                      | sets the pen line thickness to the specified _width_                                  |
-`fontsize(size)`                      | sets the font dimensions to the specified _size_                                      |
 `stroke([preserve])`                  | strokes the current path with the current color and line width the path is cleared after this operation.<br/> If preserve is _true_ the path will be preserved |
 `fill([preserve])`                    | fills the current path with the current color. Open subpaths are implicity closed.<br/> The path is cleared after this operation. If preserve is true the path is preserved after this operation |
 `circle(x, y, r)`                     | draws a circle centered at _[x, y]_ coordinates and with the radius _r_               |
 `ellipse(x, y, rx ,ry)`               | draws an ellipse centered at [x, y] coordinates and with the radii _rx_ and _ry_      |
-`rectangle(x, y, w, h, [r])`          | draws a (w x h) rectangle with upper left corner located at _(x, y)_.<br/> If radius _r_ is specified, the rectangle will have rounded corners |
-`polygon(n, x, y, r, a)`              | draws a regular polygon of _n_ sides, centered at _(x,y)_ with the radius _r_ and _a_ rotation |
+`rect(x, y, w, h, [r])`               | draws a (w x h) rectangle with upper left corner located at _(x, y)_.<br/> If radius _r_ is specified, the rectangle will have rounded corners |
 `moveTo(x, y)`                        | starts a new subpath within the current path starting at the specified _(x, y)_ point |
 `lineTo(x, y)`                        | adds a line segment to the current path starting at the current point. <br/>If there is no current point, it is equivalent to MoveTo(x, y) |
 `line(x1, y1, x2, y2)`                | draws a line from point _(x1, y1)_ to point _(x2, y2)_ |
 `arc(x, y, r, sa, ea)`                | draws a circular arc centered at _(x, y)_ with a radius of _r_.<br/> The path starts at _sa_ angle_, ends at _ea_ angle, and travels in the direction given by anticlockwise |
 `ellArc(x, y, rx, ry, sa, ea)`        | draws an elliptical arc centered at _(x, y)_ with a radius of _rx_ in x direction and _ry_ for y direction.<br/> The path starts at _sa_ angle_, ends at _ea_ angle, and travels in the direction given by anticlockwise |
 `text(str, x, y, [ax, ay])`             | draws the specified text at the specified anchor point<br/>anchor point is _x - w * ax_, _y - h * ay_, where _w_, _h_ is the size of the text<br/>when omitted _ax=0.5_, _ay=0.5_ to center the text at the specified point |
-`measureText(text)`                   | returns the rendered width and height (as array of two elements) of the specified text |
 `closePath()`                         | adds a line segment from the current point to the beginning of the current subpath.<br/> If there is no current point, this is a no-op. |
 `clearPath()`                         | clears the current path. There is no current point after this operation |
-`saveState()`                         | saves the current state of the canvas by pushin it onto a stack |
-`restoreState()`                      | restores the last saved canvas state from the stack |
+`push()`                         | saves the current state of the canvas by pushin it onto a stack |
+`pop()`                      | restores the last saved canvas state from the stack |
 `rotate(degrees, [x, y] )`            | updates the current matrix with a anticlockwise rotation. <br/> If _x, y_ is specified, rotation occurs about this point, otherwise rotation occurs about the origin |
 `snapshot([filename])`                | creates a PNG image with the current drawings. <br/>If _filename_ is omitted, it will be autogenerated with a progressive counter, that will be incremented on each <br/> `snapshot()` invocation; this is useful if you wants to generate an animation later (using all the generated PNG images). |

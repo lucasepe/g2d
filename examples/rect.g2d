@@ -1,5 +1,4 @@
-// Creates an image that is 480 x 480 pixels
-screensize(480, 480)
+size(480, 480)
 
 // Clear the image with the white color
 pencolor("#ffffff")
