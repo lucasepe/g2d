@@ -44,15 +44,3 @@ nfpms:
     formats:
       - deb
       - rpm
-
-brews:
-  - github:
-      owner: lucasepe
-      name: homebrew-g2d
-    commit_author:
-      name: lucasepe
-      email: lucasepe@gmail.com
-    homepage: 'https://github.com/lucasepe/g2d'
-    description: 'Create beatiful drawings using an adhoc interpreted language'
-    install: |
-      bin.install "g2d"
