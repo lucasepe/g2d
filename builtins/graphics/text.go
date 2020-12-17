@@ -69,3 +69,18 @@ func TextWidth(env *object.Environment, args ...object.Object) object.Object {
 		}
 	*/
 }
+
+// FontHeight sets the size of the current font face.
+func FontHeight(env *object.Environment, args ...object.Object) object.Object {
+	if err := typing.Check("fontHeight", args, typing.ExactArgs(1)); err != nil {
+		return object.NewError(err.Error())
+	}
+
+	size, err := typing.ToFloat(args[0])
+	if err != nil {
+		return object.NewError("TypeError: fontHeight() argument #1 %s", err.Error())
+	}
+
+	env.Canvas().Value.SetFontHeight(size)
+	return &object.Null{}
+}

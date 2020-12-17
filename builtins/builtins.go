@@ -48,21 +48,21 @@ var Builtins = map[string]*object.Builtin{
 	"sqrt":    &object.Builtin{Name: "sqrt", Fn: calc.Sqrt},
 
 	// Graphic Context
-	"size":        &object.Builtin{Name: "size", Fn: graphics.Size},
-	"clear":       &object.Builtin{Name: "clear", Fn: graphics.Clear},
-	"dashes":      &object.Builtin{Name: "dashes", Fn: graphics.Dashes},
-	"pencolor":    &object.Builtin{Name: "pencolor", Fn: graphics.PenColor},
-	"pensize":     &object.Builtin{Name: "pensize", Fn: graphics.PenSize},
-	"xpos":        &object.Builtin{Name: "xpos", Fn: graphics.GetCurrentX},
-	"ypos":        &object.Builtin{Name: "ypos", Fn: graphics.GetCurrentY},
-	"snapshot":    &object.Builtin{Name: "snapshot", Fn: graphics.Snapshot},
-	"width":       &object.Builtin{Name: "width", Fn: graphics.Width},
-	"height":      &object.Builtin{Name: "height", Fn: graphics.Height},
-	"push":        &object.Builtin{Name: "push", Fn: graphics.Push},
-	"pop":         &object.Builtin{Name: "pop", Fn: graphics.Pop},
-	"stroke":      &object.Builtin{Name: "stroke", Fn: graphics.Stroke},
-	"fill":        &object.Builtin{Name: "fill", Fn: graphics.Fill},
-	"worldcoords": &object.Builtin{Name: "worldcoords", Fn: graphics.WorldCoords},
+	"size":     &object.Builtin{Name: "size", Fn: graphics.Size},
+	"clear":    &object.Builtin{Name: "clear", Fn: graphics.Clear},
+	"dashes":   &object.Builtin{Name: "dashes", Fn: graphics.Dashes},
+	"pencolor": &object.Builtin{Name: "pencolor", Fn: graphics.PenColor},
+	"pensize":  &object.Builtin{Name: "pensize", Fn: graphics.PenSize},
+	"xpos":     &object.Builtin{Name: "xpos", Fn: graphics.GetCurrentX},
+	"ypos":     &object.Builtin{Name: "ypos", Fn: graphics.GetCurrentY},
+	"snapshot": &object.Builtin{Name: "snapshot", Fn: graphics.Snapshot},
+	"width":    &object.Builtin{Name: "width", Fn: graphics.Width},
+	"height":   &object.Builtin{Name: "height", Fn: graphics.Height},
+	"push":     &object.Builtin{Name: "push", Fn: graphics.Push},
+	"pop":      &object.Builtin{Name: "pop", Fn: graphics.Pop},
+	"stroke":   &object.Builtin{Name: "stroke", Fn: graphics.Stroke},
+	"fill":     &object.Builtin{Name: "fill", Fn: graphics.Fill},
+	"viewport": &object.Builtin{Name: "viewport", Fn: graphics.Viewport},
 
 	// Path
 	"beginPath":        &object.Builtin{Name: "beginPath", Fn: graphics.BeginPath},
@@ -78,6 +78,7 @@ var Builtins = map[string]*object.Builtin{
 	"scale":     &object.Builtin{Name: "scale", Fn: graphics.ScaleAbout},
 	"translate": &object.Builtin{Name: "translate", Fn: graphics.Translate},
 	"identity":  &object.Builtin{Name: "identity", Fn: graphics.Identity},
+	"transform": &object.Builtin{Name: "transform", Fn: graphics.Transform},
 
 	// 2D Primitives
 	"arc":      &object.Builtin{Name: "arc", Fn: graphics.Arc},
@@ -90,8 +91,9 @@ var Builtins = map[string]*object.Builtin{
 	"triangle": &object.Builtin{Name: "triangle", Fn: graphics.Triangle},
 
 	// Text
-	"text":      &object.Builtin{Name: "text", Fn: graphics.Text},
-	"textWidth": &object.Builtin{Name: "textWidth", Fn: graphics.TextWidth},
+	"text":       &object.Builtin{Name: "text", Fn: graphics.Text},
+	"textWidth":  &object.Builtin{Name: "textWidth", Fn: graphics.TextWidth},
+	"fontHeight": &object.Builtin{Name: "fontHeight", Fn: graphics.FontHeight},
 
 	// Images
 	"loadPNG": &object.Builtin{Name: "loadPNG", Fn: graphics.LoadPNG},

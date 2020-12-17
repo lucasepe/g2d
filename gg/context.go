@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/golang/freetype/raster"
+	"github.com/golang/freetype/truetype"
 	"golang.org/x/image/draw"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/basicfont"
@@ -73,10 +74,11 @@ type Context struct {
 	lineCap       LineCap
 	lineJoin      LineJoin
 	fillRule      FillRule
-	fontFace      font.Face
-	fontHeight    float64
-	matrix        Matrix
-	stack         []*Context
+	//fontFace      font.Face
+	fontCache  FontCache
+	fontHeight float64
+	matrix     Matrix
+	stack      []*Context
 }
 
 // NewContext creates a new image.RGBA with the specified width and height
@@ -107,14 +109,15 @@ func NewContextForRGBA(im *image.RGBA) *Context {
 		strokePattern: defaultStrokeStyle,
 		lineWidth:     1,
 		fillRule:      FillRuleWinding,
-		fontFace:      basicfont.Face7x13,
-		fontHeight:    13,
-		matrix:        Identity(),
+		//fontFace:      basicfont.Face7x13,
+		fontCache:  GetGlobalFontCache(),
+		fontHeight: 13,
+		matrix:     Identity(),
 	}
 
 	/*
-		if font, err := truetype.Parse(goregular.TTF); err == nil {
-			res.fontHeight = 13
+		if font, err := truetype.Parse(gomono.TTF); err == nil {
+			res.fontHeight = 14
 			res.fontFace = truetype.NewFace(font, &truetype.Options{Size: res.fontHeight})
 		}
 	*/
@@ -844,7 +847,7 @@ func (dc *Context) DrawImageAnchored(im image.Image, x, y int, ax, ay float64) {
 }
 
 // Text Functions
-
+/*
 func (dc *Context) SetFontFace(fontFace font.Face) {
 	dc.fontFace = fontFace
 	dc.fontHeight = float64(fontFace.Metrics().Height) / 64
@@ -858,17 +861,31 @@ func (dc *Context) LoadFontFace(path string, points float64) error {
 	}
 	return err
 }
-
+*/
 // FontHeight returns font's size
 func (dc *Context) FontHeight() float64 {
 	return dc.fontHeight
+}
+
+// SetFontHeight sets current font's size
+func (dc *Context) SetFontHeight(size float64) {
+	dc.fontHeight = size
+}
+
+func (dc *Context) fontFace() font.Face {
+	fnt, err := dc.fontCache.Load(FontData{Name: "gomono"})
+	if err == nil {
+		return truetype.NewFace(fnt, &truetype.Options{Size: dc.fontHeight})
+	}
+
+	return basicfont.Face7x13
 }
 
 func (dc *Context) drawString(im *image.RGBA, s string, x, y float64) {
 	d := &font.Drawer{
 		Dst:  im,
 		Src:  image.NewUniform(dc.color),
-		Face: dc.fontFace,
+		Face: dc.fontFace(), // dc.fontFace,
 		Dot:  fixp(x, y),
 	}
 	// based on Drawer.DrawString() in golang.org/x/image/font/font.go
@@ -956,7 +973,7 @@ func (dc *Context) MeasureMultilineString(s string, lineSpacing float64) (width,
 	height -= (lineSpacing - 1) * dc.fontHeight
 
 	d := &font.Drawer{
-		Face: dc.fontFace,
+		Face: dc.fontFace(),
 	}
 
 	// max width from lines
@@ -975,7 +992,7 @@ func (dc *Context) MeasureMultilineString(s string, lineSpacing float64) (width,
 // given the current font face.
 func (dc *Context) MeasureString(s string) (w, h float64) {
 	d := &font.Drawer{
-		Face: dc.fontFace,
+		Face: dc.fontFace(),
 	}
 	a := d.MeasureString(s)
 	return float64(a >> 6), dc.fontHeight
@@ -1084,8 +1101,9 @@ func (dc *Context) Pop() {
 // xMax: x-coordinate of upper right corner of canvas.
 // yMin: y-coordinate of lower left corner of canvas.
 // yMax: y-coordinate of upper right corner of canvas.
-func (dc *Context) SetWorldCoordinates(xMin, xMax, yMin, yMax float64) {
-	w, h := float64(dc.Width()), float64(dc.Height())
+func (dc *Context) SetWorldCoordinates(xMin, xMax, yMin, yMax float64, xOffset, yOffset float64) {
+	w := float64(dc.Width()) - 2*xOffset
+	h := float64(dc.Height()) - 2*yOffset
 
 	displayAspect := math.Abs(h / w)
 	windowAspect := math.Abs((yMax - yMin) / (xMax - xMin))
@@ -1105,7 +1123,7 @@ func (dc *Context) SetWorldCoordinates(xMin, xMax, yMin, yMax float64) {
 	sx, sy := w/(xMax-xMin), h/(yMin-yMax)
 	tx, ty := -xMin, -yMax
 
-	dc.Identity()
+	dc.Translate(xOffset, yOffset)
 	dc.Scale(sx, sy)
 	dc.Translate(tx, ty)
 }

@@ -109,3 +109,29 @@ func Identity(env *object.Environment, args ...object.Object) object.Object {
 	env.Canvas().Value.Identity()
 	return &object.Null{}
 }
+
+// Transform multiplies the specified point by the current matrix,
+// returning a transformed position.
+func Transform(env *object.Environment, args ...object.Object) object.Object {
+	if err := typing.Check("transform", args, typing.ExactArgs(2)); err != nil {
+		return object.NewError(err.Error())
+	}
+
+	x, err := typing.ToFloat(args[0])
+	if err != nil {
+		return object.NewError("TypeError: transform() argument #1 `x` %s", err.Error())
+	}
+
+	y, err := typing.ToFloat(args[1])
+	if err != nil {
+		return object.NewError("TypeError: transform() argument #2 `y` %s", err.Error())
+	}
+
+	tx, ty := env.Canvas().Value.TransformPoint(x, y)
+	return &object.Array{
+		Elements: []object.Object{
+			&object.Float{Value: tx},
+			&object.Float{Value: ty},
+		},
+	}
+}

@@ -315,7 +315,7 @@ Function                              | Description
 `size(w,[h])`                         | when both _w_ and _h_ are specified creates a rectangular image otherwise creates a squared one |
 `width()`                     | returns the main drawing image width   |
 `height()`                    | returns the main drawing image height   |
-`worldcoords(xMin, xMax, yMin, yMax)` | sets up user-defined coordinate system; performs a screen reset (drawings are cleared)|
+`viewport(xMin, xMax, yMin, yMax, xOffset, yOffset)` | sets up user-defined coordinate system; performs a screen reset (drawings are cleared)|
 `pencolor(hexcolor)`                  | sets the pen color to the specified _hexcolor_; example _pencolor("#ff0000")_         |
 `pencolor(r, g, b, [a])`              | sets the pen color to _r,g,b,a_ values - should be between 0 and 1, inclusive         |
 `pensize(width)`                      | sets the pen line thickness to the specified _width_                                  |
@@ -331,6 +331,7 @@ Function                              | Description
 `triangle(x1,y1, x2,y2, x3,y3)`       | draws a triangle using the provided vertices |
 `text(str, x, y, [ax, ay])`             | draws the specified text at the specified anchor point<br/>anchor point is _x - w * ax_, _y - h * ay_, where _w_, _h_ is the size of the text<br/>when omitted _ax=0.5_, _ay=0.5_ to center the text at the specified point |
 `textWidth(str)`                      | returns the rendered width of the specified text given the current font face |
+`fontHeight(size)`                    | sets the font height of the current font face |
 `beginPath()`                         | starts a new path                             |
 `moveTo(x, y)`                        | sets the begin of a new subpath starting at the specified _(x, y)_ point |
 `lineTo(x, y)`                        | adds a line segment to the current path starting at the current point. <br/>If there is no current point, it is equivalent to MoveTo(x, y) |

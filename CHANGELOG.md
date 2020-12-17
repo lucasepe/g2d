@@ -1,4 +1,25 @@
-0.4.0 (Unreleased)
+0.5.0 (Unreleased)
+
+NEW FEATURES:
+
+- `viewport(...)` builtin function takes two more optional parameters `xOffset` and `yOffset` to eventually relocate the viewport
+- new builtin function: `fontHeight(size)` to set the current font height
+
+BREAKING CHANGES:
+
+- ~~`worldcoors(...)`~~ renamed to `viewport(...)`
+
+---
+
+0.4.1 (Dec 15, 2020)
+
+BUG FIXES:
+
+- fix gorelaser build
+
+---
+
+0.4.0 (Dec 15, 2020)
 
 NEW FEATURES:
 
@@ -15,7 +36,7 @@ NEW FEATURES:
 - new builtin math function: `max(n1, n2, ...n)` to calculate the maximum of a sequence
 
 
-BREAKING CHANGES!
+BREAKING CHANGES:
 
 - massive code refactory
 - renamed `screensize` function to `size`

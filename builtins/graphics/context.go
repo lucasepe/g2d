@@ -310,41 +310,51 @@ func Fill(env *object.Environment, args ...object.Object) object.Object {
 	return &object.Null{}
 }
 
-// WorldCoords sets up user-defined coordinate system.
+// Viewport sets up user-defined coordinate system.
 // This performs a screen reset, all drawings are cleared.
-func WorldCoords(env *object.Environment, args ...object.Object) object.Object {
-	if err := typing.Check("worldcoords", args, typing.ExactArgs(4)); err != nil {
+func Viewport(env *object.Environment, args ...object.Object) object.Object {
+	if err := typing.Check("viewport", args, typing.RangeOfArgs(4, 6)); err != nil {
 		return object.NewError(err.Error())
 	}
 
 	xMin, err := typing.ToFloat(args[0])
 	if err != nil {
-		return object.NewError("TypeError: worldcoords() argument #1 `xMin` %s", err.Error())
+		return object.NewError("TypeError: viewport() argument #1 `xMin` %s", err.Error())
 	}
 
 	xMax, err := typing.ToFloat(args[1])
 	if err != nil {
-		return object.NewError("TypeError: worldcoords() argument #2 `xMax` %s", err.Error())
+		return object.NewError("TypeError: viewport() argument #2 `xMax` %s", err.Error())
 	}
 
 	if xMax <= xMin {
-		return object.NewError("RangeError: worldcoords() xMax must be greater then xMin")
+		return object.NewError("RangeError: viewport() xMax must be greater then xMin")
 	}
 
 	yMin, err := typing.ToFloat(args[2])
 	if err != nil {
-		return object.NewError("TypeError: worldcoords() argument #3 `yMin` %s", err.Error())
+		return object.NewError("TypeError: viewport() argument #3 `yMin` %s", err.Error())
 	}
 
 	yMax, err := typing.ToFloat(args[3])
 	if err != nil {
-		return object.NewError("TypeError: worldcoords() argument #4 `yMax` %s", err.Error())
+		return object.NewError("TypeError: viewport() argument #4 `yMax` %s", err.Error())
 	}
 
 	if yMax <= yMin {
-		return object.NewError("RangeError: worldcoords() yMax must be greater then yMin")
+		return object.NewError("RangeError: viewport() yMax must be greater then yMin")
 	}
 
-	env.Canvas().Value.SetWorldCoordinates(xMin, xMax, yMin, yMax)
+	xOffset := 0.0
+	if len(args) == 5 {
+		xOffset, _ = typing.ToFloat(args[4])
+	}
+
+	yOffset := 0.0
+	if len(args) == 6 {
+		yOffset, _ = typing.ToFloat(args[5])
+	}
+
+	env.Canvas().Value.SetWorldCoordinates(xMin, xMax, yMin, yMax, xOffset, yOffset)
 	return &object.Null{}
 }
