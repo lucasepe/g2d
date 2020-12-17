@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<style-scheme id="vsdark" _name="VSDark" version="1.0">
+	<author>Daapii</author>
+	<_description>Inspired by the Visual Studio 2012 dark theme</_description>
+
+<!-- COLORS -->
+	<color name="comment_color" value="#608b4e"/>
+	<color name="number_color" value="#b5cea8"/>
+	<color name="string_color" value="#d69d62"/>
+	<color name="boolean_color" value="#d69d62"/>
+	<color name="keyword_color" value="#4c9cd6"/>
+	<color name="error_color" value="#ff3333"/>
+	<color name="text_fg" value="#ffffff"/>
+	<color name="text_bg" value="#1e1e1e"/>
+	<color name="line_highlight" value="#0f0f0f"/>
+	<color name="line_numbers" value="#2b91af"/>
+	<color name="selection_color" value="#264f78"/>
+	<color name="builtin_function_color" value="#ffffff"/>
+	
+
+<!-- Global Settings -->
+	<style name="text" foreground="text_fg" background="text_bg"/>
+	<style name="cursor" foreground="text_fg"/>
+	<style name="current-line" background="line_highlight"/>
+	<style name="line-numbers" foreground="line_numbers" background="text_bg"/>
+	<style name="selection" background="selection_color"/>
+
+<!-- Bracket Matching -->
+	<style name="bracket-match" foreground="text_bg" background="keyword_color" />
+	<style name="bracket-mismatch" background="error_color"/>
+	<style name="search-match" foreground="comment_color" background="text_fg"/>
+
+<!-- Base syntax colors -->
+
+	<style name="def:string" foreground="string_color"/>
+	<style name="def:character" foreground="string_color"/>
+	<style name="def:special-char" foreground="string_color"/>
+	<style name="def:number" foreground="number_color"/>
+	<style name="def:decimal" foreground="number_color"/>
+	<style name="def:floating-point" foreground="number_color"/>
+	<style name="def:complex" foreground="number_color"/>
+	<style name="def:base-n-integer" foreground="number_color"/>
+	<style name="def:boolean" foreground="boolean_color"/>
+
+	<style name="def:builtin" foreground="builtin_function_color" bold="true"/>
+	<style name="def:keyword" foreground="keyword_color"/>
+	<style name="def:function" foreground="keyword_color" />
+	<style name="def:type" foreground="keyword_color"/>
+	<style name="def:preprocessor" foreground="keyword_color"/>
+	<style name="def:identifier" foreground="keyword_color"/>
+	<style name="def:operator" foreground="keyword_color"/>
+	<style name="def:statement" foreground="keyword_color"/>
+
+	<style name="def:constant" foreground="keyword_color"/>
+	<style name="def:special-constant" foreground="keyword_color"/>
+	<style name="def:error" foreground="text_bg" background="error_color"/>
+
+<!-- Comments -->
+
+	<style name="def:comment" foreground="comment_color"/>
+	<style name="def:shebang" foreground="comment_color"/>
+	<style name="def:doc-comment-element" foreground="comment_color"/>
+	<style name="def:note" foreground="comment_color"/>
+
+</style-scheme>

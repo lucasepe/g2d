@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+ Author: Luca Sepe
+ Copyright (C) 2020-2021 Luca Sepe <luca.sepe@gmail.com>
+ -->
+<language id="g2d" name="G2D" version="2.0" _section="Script">
+  <metadata>
+    <property name="mimetype">text/x-g2d</property>
+    <property name="globs">*.g2d</property>
+    <property name="line-comment-start">//</property>
+  </metadata>
+	
+  <styles>
+    <style id="comment" name="Comment" map-to="def:comment"/>
+    <style id="shebang" name="Shebang" map-to="def:shebang"/>
+    <style id="string" name="String" map-to="def:string"/>
+    <style id="escaped-character" name="Escaped Character" map-to="def:special-char"/>
+    <style id="char" name="Character" map-to="def:character"/>
+    <style id="keyword" name="Keyword" map-to="def:keyword"/>
+    <style id="builtin" name="Builtin" map-to="def:builtin"/>
+	
+  </styles>
+  
+  <definitions>
+
+    <context id="g2d">
+      <include>
+
+        <context id="comment" style-ref="comment">
+          <start>\/\/</start>
+          <end>$</end>
+        </context>
+		
+		<context id="shebang" style-ref="shebang">
+          <start>#</start>
+          <end>$</end>
+        </context>
+		
+        <context id="string" end-at-line-end="true" style-ref="string">
+          <start>"</start>
+          <end>"</end>
+          <include>
+            <context id="escape" style-ref="escaped-character">
+              <match>\\.</match>
+            </context>
+          </include>
+        </context>
+
+        <context id="char" end-at-line-end="true" style-ref="string">
+          <start>'</start>
+          <end>'</end>
+          <include>
+            <context ref="escape"/>
+          </include>
+        </context>
+
+        <context ref="def:decimal"/>
+        <context ref="def:float"/>
+
+        <context id="keywords" style-ref="keyword" class="no-spell-check">
+          <keyword>if</keyword>
+          <keyword>else</keyword>
+          <keyword>for</keyword>
+          <keyword>while</keyword>
+          <keyword>return</keyword>
+          <keyword>break</keyword>
+          <keyword>switch</keyword>
+          <keyword>case</keyword>
+          <keyword>default</keyword>
+          <keyword>fn</keyword>
+        </context>
+
+        <context id="builtins" style-ref="builtin" class="no-spell-check">
+          <keyword>args</keyword>
+          <keyword>exit</keyword>
+          <keyword>input</keyword>
+          <keyword>print</keyword>
+          <keyword>printf</keyword>
+          <keyword>sprintf</keyword>
+          <keyword>bool</keyword>
+          <keyword>float</keyword>
+          <keyword>int</keyword>
+          <keyword>str</keyword>
+          <keyword>len</keyword>
+          <keyword>append</keyword>
+          <keyword>keys</keyword>
+          <keyword>delete</keyword>
+
+          <keyword>abs</keyword>
+          <keyword>atan</keyword>
+          <keyword>atan2</keyword>
+          <keyword>cos</keyword>
+          <keyword>degrees</keyword>
+          <keyword>hypot</keyword>
+          <keyword>lerp</keyword>
+          <keyword>map</keyword>
+          <keyword>max</keyword>
+          <keyword>min</keyword>
+          <keyword>pow</keyword>
+          <keyword>sin</keyword>
+          <keyword>sqrt</keyword>
+          <keyword>radians</keyword>
+          <keyword>randf</keyword>
+          <keyword>randi</keyword>
+
+		  <keyword>size</keyword>
+          <keyword>viewport</keyword>
+		  <keyword>clear</keyword>
+		  <keyword>width</keyword>
+		  <keyword>height</keyword>
+		  <keyword>pencolor</keyword>
+		  <keyword>pensize</keyword>
+		  <keyword>dashes</keyword>
+		  <keyword>stroke</keyword>
+		  <keyword>fill</keyword>
+		  <keyword>line</keyword>
+		  <keyword>arc</keyword>
+		  <keyword>circle</keyword>
+		  <keyword>ellipse</keyword>
+		  <keyword>rect</keyword>
+		  <keyword>quad</keyword>
+		  <keyword>triangle</keyword>
+		  <keyword>text</keyword>
+		  <keyword>textWidth</keyword>
+          <keyword>fontHeight</keyword>
+		  <keyword>beginPath</keyword>
+		  <keyword>closePath</keyword>
+		  <keyword>moveTo</keyword>
+		  <keyword>lineTo</keyword>
+		  <keyword>arcTo</keyword>
+		  <keyword>quadraticCurveTo</keyword>
+		  <keyword>routeTo</keyword>
+		  <keyword>push</keyword>
+		  <keyword>pop</keyword>
+		  <keyword>rotate</keyword>
+		  <keyword>scale</keyword>
+		  <keyword>translate</keyword>
+		  <keyword>identity</keyword>
+		  <keyword>snapshot</keyword>
+		  <keyword>xpos</keyword>
+		  <keyword>ypos</keyword>
+
+        </context>
+
+
+      </include>
+    </context>
+  </definitions>
+</language>
