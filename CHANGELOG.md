@@ -1,4 +1,4 @@
-0.5.0 (Unreleased)
+0.5.0 (Dec 28, 2020)
 
 NEW FEATURES:
 
