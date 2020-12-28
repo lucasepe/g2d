@@ -42,7 +42,6 @@ d.foo
 		expectedType    token.Type
 		expectedLiteral string
 	}{
-		{token.COMMENT, "!./g2d"},
 		{token.IDENT, "five"},
 		{token.BIND, ":="},
 		{token.INT, "5"},
@@ -69,7 +68,6 @@ d.foo
 		{token.SEMICOLON, ";"},
 		{token.RBRACE, "}"},
 		{token.SEMICOLON, ";"},
-		{token.COMMENT, " this is a comment"},
 		{token.IDENT, "result"},
 		{token.BIND, ":="},
 		{token.IDENT, "add"},
@@ -108,7 +106,6 @@ d.foo
 		{token.FALSE, "false"},
 		{token.SEMICOLON, ";"},
 		{token.RBRACE, "}"},
-		{token.COMMENT, " this is another comment"},
 		{token.INT, "10"},
 		{token.EQ, "=="},
 		{token.INT, "10"},
@@ -166,7 +163,6 @@ c := "\r\n\t"
 		expectedType    token.Type
 		expectedLiteral string
 	}{
-		{token.COMMENT, "!./g2d"},
 		{token.IDENT, "a"},
 		{token.BIND, ":="},
 		{token.STRING, "\"foo\""},

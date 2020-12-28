@@ -10,7 +10,7 @@ import (
 
 func TestFetchFromURI(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "Hello from scrawl!")
+		fmt.Fprint(w, "Hello from g2d!")
 	}))
 	defer ts.Close()
 
@@ -19,19 +19,19 @@ func TestFetchFromURI(t *testing.T) {
 		t.Error(err)
 	}
 
-	want := "Hello from scrawl!"
+	want := "Hello from g2d!"
 	if got := string(data); got != want {
 		t.Errorf("got [%v] want [%v]", got, want)
 	}
 }
 
 func TestFetchFromFile(t *testing.T) {
-	data, err := FetchFromFile("../testdata/spritesheet.json", 10)
+	data, err := FetchFromFile("../testdata/none.g2d", 10)
 	if err != nil {
 		t.Error(err)
 	}
 
-	want := `{   "fram`
+	want := `print( #co`
 	if got := flatten(string(data)); got != want {
 		t.Errorf("got [%v] want [%v]", got, want)
 	}

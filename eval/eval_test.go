@@ -351,10 +351,6 @@ if (10 > 1) {
 			`"Hello" - "World"`,
 			"unknown operator: str - str",
 		},
-		{
-			`{"name": "Monkey"}[fn(x) { x }];`,
-			"unusable as hash key: fn",
-		},
 	}
 
 	for _, tt := range tests {
@@ -575,8 +571,6 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`bool("foo")`, true},
 		{`bool([])`, false},
 		{`bool([1, 2, 3])`, true},
-		{`bool({})`, false},
-		{`bool({"a": 1})`, true},
 		{`int(true)`, 1},
 		{`int(false)`, 0},
 		{`int(1)`, 1},
@@ -587,7 +581,6 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`str(10)`, "10"},
 		{`str("foo")`, "foo"},
 		{`str([1, 2, 3])`, "[1, 2, 3]"},
-		{`str({"a": 1})`, "{a: 1}"},
 	}
 
 	for _, tt := range tests {
