@@ -1,6 +1,9 @@
 
 ![](./logo.png)
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/lucasepe/g2d)](https://goreportcard.com/report/github.com/lucasepe/g2d) &nbsp;&nbsp;&nbsp; [![Go Coverage](https://gocover.io/_badge/github.com/lucasepe/g2d?nocache=g2d)](https://gocover.io/_badge/github.com/lucasepe/g2d?nocache=g2d)
+
+
 # `g2D` - Geometry art built coding
 
 Use the code basics like loops, control flow and specialized functions to generate your geometry artworks.
