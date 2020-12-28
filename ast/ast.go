@@ -53,27 +53,6 @@ func (p *Program) String() string {
 	return out.String()
 }
 
-// Comment a comment
-type Comment struct {
-	Token token.Token // the token.COMMENT token
-	Value string
-}
-
-func (c *Comment) statementNode() {}
-
-// TokenLiteral prints the literal value of the token associated with this node
-func (c *Comment) TokenLiteral() string { return c.Token.Literal }
-
-// String returns a stringified version of the AST for debugging
-func (c *Comment) String() string {
-	var out bytes.Buffer
-
-	out.WriteString(c.TokenLiteral() + " ")
-	out.WriteString(c.Value)
-
-	return out.String()
-}
-
 // ReturnStatement represenets the `return` statement node
 type ReturnStatement struct {
 	Token       token.Token // the 'return' token
@@ -334,30 +313,6 @@ func (we *WhileExpression) String() string {
 	return out.String()
 }
 
-// ImportExpression represents an `import` expression and holds the name
-// of the module being imported.
-type ImportExpression struct {
-	Token token.Token // The 'import' token
-	Name  Expression
-}
-
-func (ie *ImportExpression) expressionNode() {}
-
-// TokenLiteral prints the literal value of the token associated with this node
-func (ie *ImportExpression) TokenLiteral() string { return ie.Token.Literal }
-
-// String returns a stringified version of the AST for debugging
-func (ie *ImportExpression) String() string {
-	var out bytes.Buffer
-
-	out.WriteString(ie.TokenLiteral())
-	out.WriteString("(")
-	out.WriteString(fmt.Sprintf("\"%s\"", ie.Name))
-	out.WriteString(")")
-
-	return out.String()
-}
-
 // FunctionLiteral represents a literal functions and holds the function's
 // formal parameters and boy of the function as a block statement
 type FunctionLiteral struct {
@@ -517,34 +472,6 @@ func (ie *IndexExpression) String() string {
 	out.WriteString("[")
 	out.WriteString(ie.Index.String())
 	out.WriteString("])")
-
-	return out.String()
-}
-
-// HashLiteral represents a hash map or dictionary literal, a set of
-// key/value pairs.
-type HashLiteral struct {
-	Token token.Token // the '{' token
-	Pairs map[Expression]Expression
-}
-
-func (hl *HashLiteral) expressionNode() {}
-
-// TokenLiteral prints the literal value of the token associated with this node
-func (hl *HashLiteral) TokenLiteral() string { return hl.Token.Literal }
-
-// String returns a stringified version of the AST for debugging
-func (hl *HashLiteral) String() string {
-	var out bytes.Buffer
-
-	pairs := []string{}
-	for key, value := range hl.Pairs {
-		pairs = append(pairs, key.String()+":"+value.String())
-	}
-
-	out.WriteString("{")
-	out.WriteString(strings.Join(pairs, ", "))
-	out.WriteString("}")
 
 	return out.String()
 }

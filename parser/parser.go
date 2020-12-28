@@ -102,12 +102,10 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.TRUE, p.parseBoolean)
 	p.registerPrefix(token.FALSE, p.parseBoolean)
 	p.registerPrefix(token.NULL, p.parseNull)
-	p.registerPrefix(token.LBRACE, p.parseHashLiteral)
 	p.registerPrefix(token.LBRACKET, p.parseArrayLiteral)
 	p.registerPrefix(token.LPAREN, p.parseGroupedExpression)
 	p.registerPrefix(token.IF, p.parseIfExpression)
 	p.registerPrefix(token.WHILE, p.parseWhileExpression)
-	p.registerPrefix(token.IMPORT, p.parseImportExpression)
 	p.registerPrefix(token.FUNCTION, p.parseFunctionLiteral)
 	p.registerPrefix(token.SWITCH, p.parseSwitchStatement)
 
@@ -224,17 +222,11 @@ func (p *Parser) noInfixParseFnError(tok token.Token) {
 
 func (p *Parser) parseStatement() ast.Statement {
 	switch p.curToken.Type {
-	case token.COMMENT:
-		return p.parseComment()
 	case token.RETURN:
 		return p.parseReturnStatement()
 	default:
 		return p.parseExpressionStatement()
 	}
-}
-
-func (p *Parser) parseComment() ast.Statement {
-	return &ast.Comment{Token: p.curToken, Value: p.curToken.Literal}
 }
 
 func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
@@ -275,8 +267,8 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 		infix := p.infixParseFns[p.peekToken.Type]
 		if infix == nil {
 			p.noInfixParseFnError(p.peekToken)
-			return nil
-			//return leftExp
+			//return nil
+			return leftExp
 		}
 
 		p.nextToken()
@@ -454,23 +446,6 @@ func (p *Parser) parseWhileExpression() ast.Expression {
 	return expression
 }
 
-func (p *Parser) parseImportExpression() ast.Expression {
-	expression := &ast.ImportExpression{Token: p.curToken}
-
-	if !p.expectPeek(token.LPAREN) {
-		return nil
-	}
-
-	p.nextToken()
-	expression.Name = p.parseExpression(LOWEST)
-
-	if !p.expectPeek(token.RPAREN) {
-		return nil
-	}
-
-	return expression
-}
-
 func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 	block := &ast.BlockStatement{Token: p.curToken}
 	block.Statements = []ast.Statement{}
@@ -630,36 +605,6 @@ func (p *Parser) parseIndexExpression(left ast.Expression) ast.Expression {
 	}
 
 	return exp
-}
-
-func (p *Parser) parseHashLiteral() ast.Expression {
-	hash := &ast.HashLiteral{Token: p.curToken}
-	hash.Pairs = make(map[ast.Expression]ast.Expression)
-
-	for !p.peekTokenIs(token.RBRACE) {
-		p.nextToken()
-		key := p.parseExpression(LOWEST)
-
-		if !p.expectPeek(token.COLON) {
-			return nil
-		}
-
-		p.nextToken()
-		value := p.parseExpression(LOWEST)
-
-		hash.Pairs[key] = value
-
-		if !p.peekTokenIs(token.RBRACE) && !p.expectPeek(token.COMMA) {
-			return nil
-		}
-
-	}
-
-	if !p.expectPeek(token.RBRACE) {
-		return nil
-	}
-
-	return hash
 }
 
 // parseSwitchStatement handles a switch statement

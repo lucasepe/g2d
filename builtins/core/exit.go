@@ -1,6 +1,8 @@
 package core
 
 import (
+	"os"
+
 	"github.com/lucasepe/g2d/object"
 	"github.com/lucasepe/g2d/typing"
 )
@@ -19,7 +21,7 @@ func Exit(_ *object.Environment, args ...object.Object) object.Object {
 		status = int(args[0].(*object.Integer).Value)
 	}
 
-	object.ExitFunction(status)
+	os.Exit(status)
 
-	return nil
+	return &object.Null{}
 }

@@ -1,0 +1,76 @@
+drawSide := fn(color1, color2, color3) {
+    S := min(WIDTH, HEIGHT)
+
+    lineTo(-S/2, 0)
+    lineTo(-S/5, -S/5)
+    lineTo(0, 0)
+    fillColor(color1)
+    fill()
+
+    lineTo(0, -S/2)
+    lineTo(-S/5, -S/5)
+    lineTo(0, 0)
+    fillColor(color2)
+    fill()
+
+    // details
+    if color3 != null {
+        line(-S/5, -S/5, 0, 0)
+        strokeColor(color3)
+        strokeWeight(2)
+        stroke()
+    }
+}
+
+drawEye := fn(color) {
+    S := min(WIDTH, HEIGHT)
+    l := -S/9
+
+    moveTo(-l, 0)
+    lineTo(0, -l)
+    lineTo(l, 0)
+    lineTo(0, l)
+
+    fillColor(color)
+    fill()
+}
+
+size(256)
+
+translate(0.5*WIDTH, 0.5*HEIGHT)
+
+// draw a piece in the 4 quadrant
+drawSide("#4e78bf", "#082e70", null)
+
+// flip over the y-axis
+push()
+scale(-1, 1)
+drawSide("#4e78bf", "#4e78bf", "#082e70")
+pop()
+
+// flip over both axis
+push()
+scale(-1, -1)
+drawSide("#082e70", "#4e78bf", null)
+pop()
+
+// flip over the x-axis
+push()
+scale(1, -1)
+drawSide("#082e70", "#082e70", "#4e78bf")
+pop()
+
+drawEye("#fdff8c")
+push()
+scale(0.7, 0.7)
+drawEye("#1d338c")
+pop()
+
+push()
+scale(0.4, 0.4)
+drawEye("#f3f6d2")
+pop()
+
+
+// save the image
+snapshot("spectre.png")

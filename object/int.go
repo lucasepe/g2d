@@ -10,10 +10,15 @@ type Integer struct {
 	Value int64
 }
 
+// Type returns the type of the object
+func (i *Integer) Type() Type { return INTEGER }
+
+// Bool implements the Object Bool method
 func (i *Integer) Bool() bool {
 	return i.Value != 0
 }
 
+// Compare complies with Comparable interface
 func (i *Integer) Compare(other Object) int {
 	if obj, ok := other.(*Integer); ok {
 		switch {
@@ -33,17 +38,10 @@ func (i *Integer) Compare(other Object) int {
 	return -1
 }
 
-func (i *Integer) String() string {
-	return i.Inspect()
-}
-
 // Clone creates a new copy
 func (i *Integer) Clone() Object {
 	return &Integer{Value: i.Value}
 }
-
-// Type returns the type of the object
-func (i *Integer) Type() Type { return INTEGER }
 
 // Inspect returns a stringified version of the object for debugging
 func (i *Integer) Inspect() string { return fmt.Sprintf("%d", i.Value) }
@@ -53,3 +51,5 @@ func (i *Integer) Inspect() string { return fmt.Sprintf("%d", i.Value) }
 //
 // It might also be helpful for embedded users.
 func (i *Integer) ToInterface() interface{} { return i.Value }
+
+func (i *Integer) String() string { return i.Inspect() }

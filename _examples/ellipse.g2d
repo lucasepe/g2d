@@ -1,21 +1,66 @@
-S := 256
-size(S)
-worldcoords(-S/2, S/2,-S/2, S/2)
-pencolor("#ffffff")
+size(600, 400)
+
+fillColor(255, 255, 255)
 clear()
 
+rows := 2
+cols := 3
 
-pencolor(0, 0, 0, 0.1)
+dx := WIDTH / cols
+dy := HEIGHT / rows
+
+fontSize(20)
+
+strokeColor(0, 0, 0)
+fillColor(255, 238, 0, 250)
+strokeWeight(4)
+
+lim := 0.35 * min(dx, dy - 2*fontSize())
+
 
 i := 0
-while(i < 360) {
-    push()
-    rotate(radians(i))
-    ellipse(0, 0, 0.06*S, 0.4*S)
-    fill()
-    pop()
+while(i < rows) {
 
-    i = i + 15
+    j := 0
+    while(j < cols) {
+        cx := 0.5*dx + j*dx
+        cy := 0.5*dy + i*dy
+        
+        rx := randf(0.6*lim, 0.9*lim)
+        ry := randf(0.4*lim, 0.8*lim)
+        
+        ellipse(cx, cy, rx, ry)
+        stroke()
+
+        y := cy + 0.5*dy - 2*fontSize()
+        text(sprintf("rx = %.2f", rx), cx, y)
+        text(sprintf("ry = %.2f", ry), cx, y + fontSize())
+        
+        push()
+        strokeWeight(1)
+        dashes(0.2*lim, 0.1*lim)
+        line(cx, cy-lim, cx, cy+lim)
+        line(cx-lim, cy, cx+lim, cy)
+        stroke()
+        pop()
+
+        j = j + 1
+
+        push()
+        line(0, j*dy, WIDTH, j*dy)
+        strokeColor(205, 202, 202, 202)
+        stroke()
+        pop()
+    }
+    
+    i = i + 1
+
+    push()
+    line(i*dx, 0, i*dx, HEIGHT)
+    strokeColor(205, 202, 202, 202)
+    stroke()
+    pop()
 }
 
-snapshot("./examples/ellipse.png")
+
+snapshot("ellipse.png")

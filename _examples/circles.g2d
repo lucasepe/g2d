@@ -1,36 +1,43 @@
-// Creates an image that is 480 x 120 pixels
-W := 480
-H := 120
-size(W, H)
+pointInCircle := fn(radius) {
+    r := radius * sqrt(randf())
+    theta := randf() * 2 * PI
+    x := r * cos(theta)
+    y := r * sin(theta)
 
-// Clear the image with the white color
-pencolor("#ffffff")
+    return [x, y]
+}
+
+// Creates an image that is 480 x 120 pixels
+size(256)
+// Clear the image
+
 clear()
 
-// Sets the pen size 
-pensize(1)
+viewport(-105, 105, -105, 105)
 
-// Do 50 iterations
+// Do iterations
 i := 0
-while(i < 50) {
+while(i < 200) {
     // circle radius
-    r := randf(0.2*H, 0.6*H)
+    r := randf(5, 50)
+    
     // circle center
-    x := randf(W)
-    y := randf(H)
+    c := pointInCircle(r)
 
     // draws the circle
-    circle(x, y, r)
+    circle(c[0], c[1], r)
 
     // generate a random integer...
     // if it is even 
     if randi() % 2 == 0 {
         // fill the circle with a black color and a random transparency
-        pencolor(0, 0, 0, randf(0.3, 0.8))
+        fillColor(randi(255), randi(255), randi(255), randi(50, 150))
         fill()
     } else {
         //...if it's odd, outline the circle
-        pencolor("#000000")
+        strokeColor(randi(0, 20), randi(0, 20), randi(0, 20), randi(50, 150))
+        // Sets the pen size 
+        strokeWeight(randf(1, 6))
         stroke()
     }
     // increment the counter
@@ -38,4 +45,4 @@ while(i < 50) {
 }
 
 // save the image
-snapshot("./examples/circles.png")
+snapshot("circles.png")

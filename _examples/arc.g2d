@@ -1,0 +1,67 @@
+size(600, 400)
+
+fillColor(255, 255, 255)
+clear()
+
+rows := 2
+cols := 3
+
+dx := WIDTH / cols
+dy := HEIGHT / rows
+
+fontSize(20)
+
+strokeColor(0, 0, 0)
+fillColor(255, 238, 0, 250)
+strokeWeight(4)
+
+r := 0.35 * min(dx, dy - 2*fontSize())
+
+
+i := 0
+while(i < cols) {
+    j := 0
+    while(j < rows) {
+        cx := 0.5*dx + i*dx
+        cy := 0.5*dy + j*dy - fontSize()
+
+        sa := randi(0, 90)
+        ea := sa + randi(90, 270)
+
+        arc(cx, cy, 0.8*r, radians(sa), radians(ea))
+        stroke()
+        
+        push()
+        strokeWeight(1)
+        dashes(0.2*r, 0.1*r)
+        line(cx, cy-r, cx, cy+r)
+        line(cx-r, cy, cx+r, cy)
+        stroke()
+        pop()
+
+        y := cy + 1.2*r
+        text(sprintf("sa = %d°", sa), cx, y)
+        text(sprintf("ea = %d°", ea), cx, y + 1.1*fontSize())
+
+        j = j + 1
+
+        push()
+        line(0, j*dy, WIDTH, j*dy)
+        strokeColor(205, 202, 202, 202)
+        stroke()
+        pop()
+    }
+    
+    i = i + 1
+
+    push()
+    line(i*dx, 0, i*dx, HEIGHT)
+    strokeColor(205, 202, 202, 202)
+    stroke()
+    pop()
+}
+
+//fontSize(24)
+//text("sa = 20", cx, cy)
+
+snapshot("arc.png")

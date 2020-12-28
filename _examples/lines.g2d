@@ -1,30 +1,23 @@
-S := 256
-size(S)
-worldcoords(-S/2, S/2,-S/2, S/2)
-pencolor("#ffffff")
+size(256)
 clear()
+
+viewport(-WIDTH/2, WIDTH/2,-HEIGHT/2, HEIGHT/2)
 
 i := 0
 while (i < 200) {
-    x1 := randf(-S/2, S/2)
-    y1 := randf(-S/2, S/2)
+    x1 := randf(-WIDTH/2, WIDTH/2)
+    y1 := randf(-HEIGHT/2, HEIGHT/2)
     
-    x2 := randf(-S/2, S/2)
-    y2 := randf(-S/2, S/2)
-
-    w := randf(1, 5)
-    
-    r := randf()
-    g := randf()
-    b := randf()
-    a := randf()
+    x2 := 10 + randf(-WIDTH/2, WIDTH/2)
+    y2 := 10 + randf(-HEIGHT/2, HEIGHT/2)
 
     line(x1, y1, x2, y2)
-    pensize(w)
-    pencolor(r, g, b, a)
+
+    strokeWeight(randf(1, 5))
+    strokeColor(randf(255), randf(255), randf(255), randf(150, 255))
     stroke()
 
     i = i + 1
 }
 
-snapshot("./examples/lines.png")
+snapshot("lines.png")

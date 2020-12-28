@@ -5,27 +5,11 @@ import (
 	"unicode"
 )
 
-type measureStringer interface {
+type StringMeasurer interface {
 	MeasureString(s string) (w, h float64)
 }
 
-func splitOnSpace(x string) []string {
-	var result []string
-	pi := 0
-	ps := false
-	for i, c := range x {
-		s := unicode.IsSpace(c)
-		if s != ps && i > 0 {
-			result = append(result, x[pi:i])
-			pi = i
-		}
-		ps = s
-	}
-	result = append(result, x[pi:])
-	return result
-}
-
-func wordWrap(m measureStringer, s string, width float64) []string {
+func WordWrap(m StringMeasurer, s string, width float64) []string {
 	var result []string
 	for _, line := range strings.Split(s, "\n") {
 		fields := splitOnSpace(line)
@@ -54,5 +38,21 @@ func wordWrap(m measureStringer, s string, width float64) []string {
 	for i, line := range result {
 		result[i] = strings.TrimSpace(line)
 	}
+	return result
+}
+
+func splitOnSpace(x string) []string {
+	var result []string
+	pi := 0
+	ps := false
+	for i, c := range x {
+		s := unicode.IsSpace(c)
+		if s != ps && i > 0 {
+			result = append(result, x[pi:i])
+			pi = i
+		}
+		ps = s
+	}
+	result = append(result, x[pi:])
 	return result
 }

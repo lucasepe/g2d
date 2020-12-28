@@ -1,13 +1,11 @@
-S := 256
-N := 512
-PI := 3.141592
 
-size(S)
-worldcoords(-S/2, S/2,-S/2, S/2)
-pencolor("#ffffff")
+size(256)
 clear()
 
-pencolor("#000000")
+viewport(-WIDTH/2, WIDTH/2,-HEIGHT/2, HEIGHT/2)
+
+N := 512
+S := min(WIDTH, HEIGHT)
 
 i := 0
 while (i < N) {
@@ -20,10 +18,11 @@ while (i < N) {
 	r := t * 5
 
 	circle(x, y, r)
+    fillColor(randf(190, 255), randf(190, 255), randf(100, 150))
+    fill()
 
 	i = i + 1
 }
 
-fill()
 
-snapshot("./examples/spiral.png")
+snapshot("spiral.png")

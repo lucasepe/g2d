@@ -39,15 +39,6 @@ const (
 	// ARRAY is the Array object type
 	ARRAY = "array"
 
-	// HASH is the Hash object type
-	HASH = "hash"
-
-	// MODULE is the Module object type
-	MODULE = "module"
-
-	// CANVAS is the Canvas object type
-	CANVAS = "canvas"
-
 	// IMAGE is the Image object type
 	IMAGE = "image"
 )
@@ -70,12 +61,6 @@ type Sizeable interface {
 // the Clone() method used by binding names to values.
 type Immutable interface {
 	Clone() Object
-}
-
-// Hashable is the interface for all hashable objects which must implement
-// the HashKey() method which reutrns a HashKey result.
-type Hashable interface {
-	HashKey() HashKey
 }
 
 // BuiltinFunction represents the builtin function type

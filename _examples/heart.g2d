@@ -1,40 +1,34 @@
-
-rndColor := fn() {
-    r := randf()
-    g := randf()
-    b := randf()
-    a := randf()
-
-    pencolor(r, g, b, a)
-}
-
+// Formula: https://mathworld.wolfram.com/HeartCurve.html
 heartShape := fn(x0, y0, r) {
   moveTo(x0, y0)
   
   t := 0
   while(t < 360) {
     tr := radians(t)
-    x := x0 - 16 * r * sin(tr) *sin(tr) * sin(tr)
-    y := y0 + (13 * r * cos(tr) - 5 * r * cos(2 * tr) - 2 * r * cos(3 * tr) - r * cos(4 * tr))
+    x := r * 16 * pow(sin(tr), 3)
+    y := r * (13 * cos(tr) - 5 * cos(2 * tr) - 2 * cos(3 * tr) - cos(4 * tr))
 
     lineTo(x, y)
     t = t + 1
   }
 }
 
-S := 256
-size(S)
-worldcoords(-S/2, S/2,-S/2, S/2)
-pencolor("#ffffff")
+// Picture size
+size(256)
 clear()
 
-r := 8
+// Custom coordinates system
+viewport(-70, 70, -70, 70)
+
+// Draw the Heart shape few times
+r := 4
 while(r > 1) {
-    rndColor()
     heartShape(0, 0, r)
+    fillColor(randi(150, 250), randi(0, 160), randi(0, 150), randi(200, 250))
     fill()
-    snapshot()
+   
     r = r - 0.5
 }
 
-snapshot("./examples/heart.png")
+// Saves the output
+snapshot("heart.png")

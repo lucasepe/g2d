@@ -9,14 +9,14 @@ import (
 
 // BeginPath starts a new path.
 func BeginPath(env *object.Environment, args ...object.Object) object.Object {
-	env.Canvas().Value.NewSubPath()
+	env.GraphicContext().BeginPath()
 	return &object.Null{}
 }
 
 // ClosePath adds a line segment from the current point to the beginning
 // of the current subpath. If there is no current point, this is a no-op.
 func ClosePath(env *object.Environment, args ...object.Object) object.Object {
-	env.Canvas().Value.ClosePath()
+	env.GraphicContext().ClosePath()
 	return &object.Null{}
 }
 
@@ -40,11 +40,11 @@ func RouteTo(env *object.Environment, args ...object.Object) object.Object {
 	// displacements in x and y directions
 	dx, dy := d*math.Cos(a), d*math.Sin(a)
 
-	dc := env.Canvas().Value
-	if pt, ok := dc.GetCurrentPoint(); !ok {
+	dc := env.GraphicContext()
+	if x, y, ok := dc.CurrentPoint(); !ok {
 		dc.MoveTo(dx, dy)
 	} else {
-		dc.LineTo(pt.X+dx, pt.Y+dy)
+		dc.LineTo(x+dx, y+dy)
 	}
 
 	return &object.Null{}
@@ -66,7 +66,7 @@ func MoveTo(env *object.Environment, args ...object.Object) object.Object {
 		return object.NewError("TypeError: moveTo() argument #2 %s", err.Error())
 	}
 
-	env.Canvas().Value.MoveTo(x, y)
+	env.GraphicContext().MoveTo(x, y)
 	return &object.Null{}
 }
 
@@ -87,7 +87,7 @@ func LineTo(env *object.Environment, args ...object.Object) object.Object {
 		return object.NewError("TypeError: lineTo() argument #2 %s", err.Error())
 	}
 
-	env.Canvas().Value.LineTo(x, y)
+	env.GraphicContext().LineTo(x, y)
 	return &object.Null{}
 }
 
@@ -125,14 +125,14 @@ func ArcTo(env *object.Environment, args ...object.Object) object.Object {
 		return object.NewError("TypeError: arcTo() argument #5 `r` %s", err.Error())
 	}
 
-	env.Canvas().Value.ArcTo(x1, y1, x2, y2, r)
+	env.GraphicContext().ArcTo(x1, y1, x2, y2, r)
 	return &object.Null{}
 }
 
 // QuadraticCurveTo adds a quadratic Bézier curve to the current sub-path.
 // It requires two points: the first one is a control point and the second one is the end point.
 // The starting point is the latest point in the current path, which can be
-// changed using `moveTo()`` before creating the quadratic Bézier curve.
+// changed using `moveTo()` before creating the quadratic Bézier curve.
 func QuadraticCurveTo(env *object.Environment, args ...object.Object) object.Object {
 	if err := typing.Check("quadraticCurveTo", args, typing.ExactArgs(4)); err != nil {
 		return object.NewError(err.Error())
@@ -158,6 +158,6 @@ func QuadraticCurveTo(env *object.Environment, args ...object.Object) object.Obj
 		return object.NewError("TypeError: quadraticCurveTo() argument #4 %s", err.Error())
 	}
 
-	env.Canvas().Value.QuadraticTo(x1, y1, x2, y2)
+	env.GraphicContext().QuadraticTo(x1, y1, x2, y2)
 	return &object.Null{}
 }

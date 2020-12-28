@@ -11,10 +11,12 @@ type Float struct {
 	Value float64
 }
 
+// Bool implements the Object Bool method
 func (f *Float) Bool() bool {
 	return f.Value != 0
 }
 
+// Compare complies with Comparable interface
 func (f *Float) Compare(other Object) int {
 	if obj, ok := other.(*Float); ok {
 		return compareFloats(f.Value, obj.Value)
@@ -23,10 +25,6 @@ func (f *Float) Compare(other Object) int {
 		return compareFloats(f.Value, float64(obj.Value))
 	}
 	return -1
-}
-
-func (f *Float) String() string {
-	return f.Inspect()
 }
 
 // Clone creates a new copy
@@ -45,6 +43,8 @@ func (f *Float) Inspect() string { return strconv.FormatFloat(f.Value, 'f', -1, 
 //
 // It might also be helpful for embedded users.
 func (f *Float) ToInterface() interface{} { return f.Value }
+
+func (f *Float) String() string { return f.Inspect() }
 
 func compareFloats(a, b float64) int {
 	return big.NewFloat(a).Cmp(big.NewFloat(b))

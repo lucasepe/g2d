@@ -4,12 +4,12 @@ import (
 	"image"
 )
 
+// Image represents an image object
 type Image struct {
 	Value image.Image
 }
 
-func (im *Image) String() string { return im.Inspect() }
-
+// Bool implements the Object Bool method
 func (im *Image) Bool() bool { return im.Value != nil }
 
 // Type returns the type of the object
@@ -28,3 +28,5 @@ func (im *Image) ToInterface() interface{} { return "<IMAGE>" }
 func (im *Image) Clone() Object {
 	return &Image{Value: im.Value}
 }
+
+func (im *Image) String() string { return im.Inspect() }

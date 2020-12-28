@@ -10,10 +10,12 @@ type Boolean struct {
 	Value bool
 }
 
+// Bool implements the Object Bool method
 func (b *Boolean) Bool() bool {
 	return b.Value
 }
 
+// Int converts the boolean value to int
 func (b *Boolean) Int() int {
 	if b.Value {
 		return 1
@@ -21,15 +23,12 @@ func (b *Boolean) Int() int {
 	return 0
 }
 
+// Compare complies with Comparable interface
 func (b *Boolean) Compare(other Object) int {
 	if obj, ok := other.(*Boolean); ok {
 		return b.Int() - obj.Int()
 	}
 	return 1
-}
-
-func (b *Boolean) String() string {
-	return b.Inspect()
 }
 
 // Clone creates a new copy
@@ -48,3 +47,5 @@ func (b *Boolean) Inspect() string { return fmt.Sprintf("%t", b.Value) }
 //
 // It might also be helpful for embedded users.
 func (b *Boolean) ToInterface() interface{} { return b.Value }
+
+func (b *Boolean) String() string { return b.Inspect() }

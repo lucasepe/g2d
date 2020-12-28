@@ -1,17 +1,14 @@
 // https://en.wikipedia.org/wiki/Maurer_rose
 
-S := 256
-size(S)
-pencolor("#ffffff")
+size(256)
 clear()
 
-translate(S/2, S/2)
+viewport(-140, 140, -140, 140)
 
 n := 6
 d := 71
+S := min(WIDTH, HEIGHT)
 
-pencolor("#0000ff")
-pensize(0.5)
 
 theta := 0
 while (theta <= 360) {
@@ -25,10 +22,9 @@ while (theta <= 360) {
 
     theta = theta + 1
 }
+strokeColor("#0000ff")
+strokeWeight(0.5)
 stroke()
-
-pencolor("#ff0000")
-pensize(2)
 
 theta := 0
 while (theta <= 360) {
@@ -42,6 +38,8 @@ while (theta <= 360) {
 
     theta = theta + 1
 }
+strokeColor("#ff0000")
+strokeWeight(2)
 stroke()
 
-snapshot("./examples/maurer.png")
+snapshot("maurer.png")

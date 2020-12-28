@@ -1,10 +1,11 @@
 package graphics
 
 import (
-	"fmt"
-	"os"
+	"image"
 	"path/filepath"
+	"reflect"
 
+	"github.com/lucasepe/g2d/gg/img"
 	"github.com/lucasepe/g2d/object"
 	"github.com/lucasepe/g2d/typing"
 )
@@ -29,7 +30,8 @@ func Size(env *object.Environment, args ...object.Object) object.Object {
 		}
 	}
 
-	env.Canvas().Reset(w, h)
+	ctx := img.NewContextForRGBA(image.NewRGBA(image.Rect(0, 0, w, h)))
+	env.SetGraphicContext(ctx)
 	return &object.Null{}
 }
 
@@ -39,77 +41,119 @@ func Clear(env *object.Environment, args ...object.Object) object.Object {
 		return object.NewError(err.Error())
 	}
 
-	env.Canvas().Value.Clear()
+	env.GraphicContext().Clear()
 	return &object.Null{}
 }
 
-// PenColor returns or sets the cursor pen color.
-// pencolor(hexcolor) - sets the pen color to `hexcolor`.
-// pencolor(r, g, b) - sets the pen color to `r,g,b` values - should be between 0 and 1, inclusive. Alpha will be set to 1 (fully opaque).
-// pencolor(r, g, b, a) -  sets the pen color to `r,g,b,a` values - should be between 0 and 1, inclusive.
-func PenColor(env *object.Environment, args ...object.Object) object.Object {
+// StrokeColor returns or sets the stroke color.
+// strokeColor(hexcolor) - sets the stroke color to `hexcolor`.
+// strokeColor(r, g, b) - sets the stroke color to `r,g,b` values.
+// strokeColor(r, g, b, a) -  sets the stroke color to `r,g,b,a` values.
+func StrokeColor(env *object.Environment, args ...object.Object) object.Object {
 	if len(args) < 1 {
-		return object.NewError("pencolor() expects one or four arguments")
+		return object.NewError("strokeColor() expects one or four arguments")
 	}
 
 	if len(args) == 1 {
 		if args[0].Type() == object.STRING {
 			color := args[0].(*object.String).Value
-			env.Canvas().Value.SetHexColor(color)
+			env.GraphicContext().SetStrokeColor(parseHexColor(color))
 			return &object.Null{}
 		}
 
-		return object.NewError("TypeError: pencolor() argument #1 expected to be `string` got `%s`", args[0].Type())
+		return object.NewError("TypeError: strokeColor() argument #1 expected to be `string` got `%s`", args[0].Type())
 	}
 
-	if err := typing.Check("pencolor", args, typing.RangeOfArgs(3, 4)); err != nil {
+	if err := typing.Check("strokeColor", args, typing.RangeOfArgs(3, 4)); err != nil {
 		return object.NewError(err.Error())
 	}
 
-	r, err := typing.ToFloat(args[0])
+	r, err := typing.ToInt(args[0])
 	if err != nil {
-		return object.NewError("TypeError: pencolor() argument #1 `r` %s", err.Error())
+		return object.NewError("TypeError: strokeColor() argument #1 `r` %s", err.Error())
 	}
 
-	g, err := typing.ToFloat(args[1])
+	g, err := typing.ToInt(args[1])
 	if err != nil {
-		return object.NewError("TypeError: pencolor() argument #2 `g` %s", err.Error())
+		return object.NewError("TypeError: strokeColor() argument #2 `g` %s", err.Error())
 	}
 
-	b, err := typing.ToFloat(args[2])
+	b, err := typing.ToInt(args[2])
 	if err != nil {
-		return object.NewError("TypeError: pencolor() argument #3 `b` %s", err.Error())
+		return object.NewError("TypeError: strokeColor() argument #3 `b` %s", err.Error())
 	}
 
-	switch len(args) {
-	case 3:
-		env.Canvas().Value.SetRGB(r, g, b)
-	case 4:
-		a, err := typing.ToFloat(args[3])
-		if err != nil {
-			return object.NewError("TypeError: pencolor() argument #4 `a` %s", err.Error())
-		}
-		env.Canvas().Value.SetRGBA(r, g, b, a)
+	a := 255
+	if len(args) == 4 {
+		a, _ = typing.ToInt(args[3])
 	}
 
+	env.GraphicContext().SetStrokeColor(r, g, b, a)
 	return &object.Null{}
 }
 
-// PenSize returns or sets the pen line thickness.
-// pensize() - returns the current pen line thickness.
-// pensize(width) - sets the pen line thickness to `width`.
-func PenSize(env *object.Environment, args ...object.Object) object.Object {
+// FillColor returns or sets the fill color.
+// fillColor(hexcolor) - sets the fill color to `hexcolor`.
+// fillColor(r, g, b) - sets the fill color to `r,g,b` values.
+// fillColor(r, g, b, a) -  sets the fill color to `r,g,b,a` values.
+func FillColor(env *object.Environment, args ...object.Object) object.Object {
+	if len(args) < 1 {
+		return object.NewError("fillColor() expects one or four arguments")
+	}
+
+	if len(args) == 1 {
+		if args[0].Type() == object.STRING {
+			color := args[0].(*object.String).Value
+			env.GraphicContext().SetFillColor(parseHexColor(color))
+			return &object.Null{}
+		}
+
+		return object.NewError("TypeError: fillColor() argument #1 expected to be `string` got `%s`", args[0].Type())
+	}
+
+	if err := typing.Check("fillColor", args, typing.RangeOfArgs(3, 4)); err != nil {
+		return object.NewError(err.Error())
+	}
+
+	r, err := typing.ToInt(args[0])
+	if err != nil {
+		return object.NewError("TypeError: fillColor() argument #1 `r` %s", err.Error())
+	}
+
+	g, err := typing.ToInt(args[1])
+	if err != nil {
+		return object.NewError("TypeError: fillColor() argument #2 `g` %s", err.Error())
+	}
+
+	b, err := typing.ToInt(args[2])
+	if err != nil {
+		return object.NewError("TypeError: fillColor() argument #3 `b` %s", err.Error())
+	}
+
+	a := 255
+	if len(args) == 4 {
+		a, _ = typing.ToInt(args[3])
+	}
+
+	env.GraphicContext().SetFillColor(r, g, b, a)
+	return &object.Null{}
+}
+
+// StrokeWeight returns or sets the stroke line thickness.
+// strokeWeight() - returns the current stroke line thickness.
+// strokeWeight(width) - sets the stroke thickness to `width`.
+func StrokeWeight(env *object.Environment, args ...object.Object) object.Object {
 	if len(args) == 0 {
-		lw := env.Canvas().Value.LineWidth()
+		lw := env.GraphicContext().StrokeWeight()
 		return &object.Float{Value: lw}
 	}
 
 	lw, err := typing.ToFloat(args[0])
 	if err != nil {
-		return object.NewError("TypeError: pensize() argument #1 %s", err.Error())
+		return object.NewError("TypeError: strokeWeight() argument #1 %s", err.Error())
 	}
 
-	env.Canvas().Value.SetLineWidth(lw)
+	env.GraphicContext().SetStrokeWeight(lw)
 	return &object.Null{}
 }
 
@@ -118,7 +162,7 @@ func PenSize(env *object.Environment, args ...object.Object) object.Object {
 // alternating on and off lengths.
 func Dashes(env *object.Environment, args ...object.Object) object.Object {
 	if len(args) == 0 {
-		env.Canvas().Value.SetDash()
+		env.GraphicContext().SetLineDash()
 		return &object.Null{}
 	}
 
@@ -134,7 +178,7 @@ func Dashes(env *object.Environment, args ...object.Object) object.Object {
 			dashes = append(dashes, el)
 		}
 
-		env.Canvas().Value.SetDash(dashes...)
+		env.GraphicContext().SetLineDash(dashes...)
 		return &object.Null{}
 	}
 
@@ -147,15 +191,14 @@ func Dashes(env *object.Environment, args ...object.Object) object.Object {
 		dashes = append(dashes, val)
 	}
 
-	env.Canvas().Value.SetDash(dashes...)
+	env.GraphicContext().SetLineDash(dashes...)
 	return &object.Null{}
 }
 
 // GetCurrentX returns the current X position if there is a current point.
 func GetCurrentX(env *object.Environment, args ...object.Object) object.Object {
-	dc := env.Canvas().Value
-	if pt, ok := dc.GetCurrentPoint(); ok {
-		return &object.Float{Value: pt.X}
+	if x, _, ok := env.GraphicContext().CurrentPoint(); ok {
+		return &object.Float{Value: x}
 	}
 
 	return object.NewError("Error: xpos() - there is no current point after `stroke` or `fill`")
@@ -163,9 +206,8 @@ func GetCurrentX(env *object.Environment, args ...object.Object) object.Object {
 
 // GetCurrentY returns the current Y position if there is a current point.
 func GetCurrentY(env *object.Environment, args ...object.Object) object.Object {
-	dc := env.Canvas().Value
-	if pt, ok := dc.GetCurrentPoint(); ok {
-		return &object.Float{Value: pt.Y}
+	if _, y, ok := env.GraphicContext().CurrentPoint(); ok {
+		return &object.Float{Value: y}
 	}
 
 	return object.NewError("Error: ypos() - there is no current point after `stroke` or `fill`")
@@ -179,7 +221,7 @@ func Width(env *object.Environment, args ...object.Object) object.Object {
 	}
 
 	if len(args) == 0 {
-		w := env.Canvas().Value.Width()
+		w := env.GraphicContext().Width()
 		return &object.Integer{Value: int64(w)}
 	}
 
@@ -198,7 +240,7 @@ func Height(env *object.Environment, args ...object.Object) object.Object {
 	}
 
 	if len(args) == 0 {
-		h := env.Canvas().Value.Height()
+		h := env.GraphicContext().Height()
 		return &object.Integer{Value: int64(h)}
 	}
 
@@ -212,13 +254,13 @@ func Height(env *object.Environment, args ...object.Object) object.Object {
 
 // Push saves the current state of the context by pushin it onto a stack. These can be nested.
 func Push(env *object.Environment, args ...object.Object) object.Object {
-	env.Canvas().Value.Push()
+	env.GraphicContext().Push()
 	return &object.Null{}
 }
 
 // Pop restores the last saved context state from the stack.
 func Pop(env *object.Environment, args ...object.Object) object.Object {
-	env.Canvas().Value.Pop()
+	env.GraphicContext().Pop()
 	return &object.Null{}
 }
 
@@ -232,81 +274,51 @@ func Snapshot(env *object.Environment, args ...object.Object) object.Object {
 		return object.NewError(err.Error())
 	}
 
+	ctx, ok := env.GraphicContext().(*img.Context)
+	if !ok {
+		return object.NewError(
+			"expected graphic context of type img.Context, got: %v (not impl yet)",
+			reflect.TypeOf(env.GraphicContext()))
+	}
+
+	filename := env.SnapshotFilename()
 	if len(args) == 1 {
-		filename := args[0].(*object.String).Value
-		if err := env.Canvas().Value.SavePNG(filename); err != nil {
-			return object.NewError(err.Error())
-		}
-
-		return &object.Null{}
+		filename = args[0].(*object.String).Value
 	}
 
-	object.SaveCounter = object.SaveCounter + 1
+	if folder := env.SnapshotFolder(); folder != "" {
+		/*
+			if err := utils.Mkdir(folder); err != nil {
+				return object.NewError(err.Error())
+			}*/
 
-	folder := filepath.Join(object.WorkDir, object.SourceFile)
-	if err := mkdir(folder); err != nil {
-		return object.NewError(err.Error())
+		filename = filepath.Join(folder, filename)
 	}
 
-	filename := filepath.Join(folder,
-		fmt.Sprintf("%s_%03d.png", object.SourceFile, object.SaveCounter))
-
-	if err := env.Canvas().Value.SavePNG(filename); err != nil {
+	if err := savePNG(filename, ctx.Image()); err != nil {
 		return object.NewError(err.Error())
 	}
 
 	return &object.Null{}
 }
 
-func mkdir(path string) error {
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		return os.Mkdir(path, 0755)
-	}
-
-	return nil
-}
-
 // Stroke strokes the current path with the current color and line width
 // the path is cleared after this operation.
-// If preserve is true the path will be preserved.
 func Stroke(env *object.Environment, args ...object.Object) object.Object {
-	if err := typing.Check("stroke", args, typing.RangeOfArgs(0, 1)); err != nil {
-		return object.NewError(err.Error())
-	}
-
-	preserve := false
-	if (len(args) > 0) && (args[0].Type() == object.BOOLEAN) {
-		preserve = args[0].(*object.Boolean).Value
-	}
-
-	if preserve {
-		env.Canvas().Value.StrokePreserve()
-	} else {
-		env.Canvas().Value.Stroke()
-	}
-
+	env.GraphicContext().Stroke()
 	return &object.Null{}
 }
 
 // Fill fills the current path with the current color.
 // Open subpaths are implicity closed. The path is cleared after this operation.
-// If preserve is true the path is preserved after this operation.
 func Fill(env *object.Environment, args ...object.Object) object.Object {
-	if err := typing.Check("fill", args, typing.RangeOfArgs(0, 1)); err != nil {
-		return object.NewError(err.Error())
-	}
+	env.GraphicContext().Fill()
+	return &object.Null{}
+}
 
-	preserve := false
-	if (len(args) > 0) && (args[0].Type() == object.BOOLEAN) {
-		preserve = args[0].(*object.Boolean).Value
-	}
-
-	if preserve {
-		env.Canvas().Value.FillPreserve()
-	} else {
-		env.Canvas().Value.Fill()
-	}
-
+// FillAndStroke first fills the current path and than strokes it
+func FillAndStroke(env *object.Environment, args ...object.Object) object.Object {
+	env.GraphicContext().FillAndStroke()
 	return &object.Null{}
 }
 
@@ -355,6 +367,6 @@ func Viewport(env *object.Environment, args ...object.Object) object.Object {
 		yOffset, _ = typing.ToFloat(args[5])
 	}
 
-	env.Canvas().Value.SetWorldCoordinates(xMin, xMax, yMin, yMax, xOffset, yOffset)
+	setWorldCoordinates(env.GraphicContext(), xMin, xMax, yMin, yMax, xOffset, yOffset)
 	return &object.Null{}
 }

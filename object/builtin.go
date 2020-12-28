@@ -13,12 +13,9 @@ type Builtin struct {
 	Env  *Environment
 }
 
+// Bool implements the Object Bool method
 func (b *Builtin) Bool() bool {
 	return true
-}
-
-func (b *Builtin) String() string {
-	return b.Inspect()
 }
 
 // Type returns the type of the object
@@ -36,3 +33,5 @@ func (b *Builtin) Inspect() string {
 func (b *Builtin) ToInterface() interface{} {
 	return "<BUILTIN>"
 }
+
+func (b *Builtin) String() string { return b.Inspect() }

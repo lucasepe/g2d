@@ -2,12 +2,24 @@
 
 NEW FEATURES:
 
+- commandline tool can load `.g2d` scripts from your local filesystem or from HTTP (see [README](README.md))
 - `viewport(...)` builtin function takes two more optional parameters `xOffset` and `yOffset` to eventually relocate the viewport
-- new builtin function: `fontHeight(size)` to set the current font height
+- new builtin function: `fillColor` to specify the fill color (takes `r`, `g`, `b`, `[a]` range [`0-255`] or hex color string `#rrggbbaa`)
+- new builtin function: `strokeColor` to specify the stroke color (takes `r`, `g`, `b`, `[a]` range [`0-255`] or hex color string `#rrggbbaa`)
+- new builtin function: `arcTo` like [WebKit Context2D arcTo](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/arcTo)
+- new builtin function: `fontSize(size)` to set the current font height
+- mew builtin function: `star` to draw a star polygon
+- mew builtin function: `fillAndStroke` to fill and stroke in one shot
+- new builtin function: `imageGet` to load a PNG image form local file system
+- new builtin function: `imageAt` to draw a PNG image at specified location on the main canvas
+- new builtin function: `transform(x, y)` multiplies the point _x_, _y_ by the current matrix, returning a transformed position
 
 BREAKING CHANGES:
 
+- huge refactoring - GraphicContext is an interface, so, potentially we could use different drivers (PDF, SVG, etc.)
+- REPL removed (now `g2d` works only as commandline tool)
 - ~~`worldcoors(...)`~~ renamed to `viewport(...)`
+- ~~`pensize(...)`~~ renamed to `strokeWeight(...)`
 
 ---
 

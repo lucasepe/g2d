@@ -1332,23 +1332,3 @@ func TestParsingHashLiteralsWithExpressions(t *testing.T) {
 		testFunc(value)
 	}
 }
-
-func TestParsingImportExpressions(t *testing.T) {
-	assert := assert.New(t)
-
-	tests := []struct {
-		input    string
-		expected string
-	}{
-		{`import("mod")`, `import("mod")`},
-	}
-
-	for _, tt := range tests {
-		l := lexer.New(tt.input)
-		p := New(l)
-		program := p.ParseProgram()
-		checkParserErrors(t, p)
-
-		assert.Equal(tt.expected, program.String())
-	}
-}

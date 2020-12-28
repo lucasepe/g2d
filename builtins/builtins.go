@@ -13,7 +13,6 @@ import (
 // Builtins ...
 var Builtins = map[string]*object.Builtin{
 	// Core
-	"args":    &object.Builtin{Name: "args", Fn: core.Args},
 	"exit":    &object.Builtin{Name: "exit", Fn: core.Exit},
 	"input":   &object.Builtin{Name: "input", Fn: core.Input},
 	"print":   &object.Builtin{Name: "print", Fn: core.Print},
@@ -25,8 +24,6 @@ var Builtins = map[string]*object.Builtin{
 	"str":     &object.Builtin{Name: "str", Fn: core.Str},
 	"len":     &object.Builtin{Name: "len", Fn: core.Len},
 	"append":  &object.Builtin{Name: "append", Fn: core.Append},
-	"keys":    &object.Builtin{Name: "keys", Fn: core.Keys},
-	"delete":  &object.Builtin{Name: "delete", Fn: core.Delete},
 	"type":    &object.Builtin{Name: "type", Fn: core.TypeOf},
 
 	// Calculation
@@ -48,21 +45,23 @@ var Builtins = map[string]*object.Builtin{
 	"sqrt":    &object.Builtin{Name: "sqrt", Fn: calc.Sqrt},
 
 	// Graphic Context
-	"size":     &object.Builtin{Name: "size", Fn: graphics.Size},
-	"clear":    &object.Builtin{Name: "clear", Fn: graphics.Clear},
-	"dashes":   &object.Builtin{Name: "dashes", Fn: graphics.Dashes},
-	"pencolor": &object.Builtin{Name: "pencolor", Fn: graphics.PenColor},
-	"pensize":  &object.Builtin{Name: "pensize", Fn: graphics.PenSize},
-	"xpos":     &object.Builtin{Name: "xpos", Fn: graphics.GetCurrentX},
-	"ypos":     &object.Builtin{Name: "ypos", Fn: graphics.GetCurrentY},
-	"snapshot": &object.Builtin{Name: "snapshot", Fn: graphics.Snapshot},
-	"width":    &object.Builtin{Name: "width", Fn: graphics.Width},
-	"height":   &object.Builtin{Name: "height", Fn: graphics.Height},
-	"push":     &object.Builtin{Name: "push", Fn: graphics.Push},
-	"pop":      &object.Builtin{Name: "pop", Fn: graphics.Pop},
-	"stroke":   &object.Builtin{Name: "stroke", Fn: graphics.Stroke},
-	"fill":     &object.Builtin{Name: "fill", Fn: graphics.Fill},
-	"viewport": &object.Builtin{Name: "viewport", Fn: graphics.Viewport},
+	"size":          &object.Builtin{Name: "size", Fn: graphics.Size},
+	"clear":         &object.Builtin{Name: "clear", Fn: graphics.Clear},
+	"dashes":        &object.Builtin{Name: "dashes", Fn: graphics.Dashes},
+	"strokeColor":   &object.Builtin{Name: "strokeColor", Fn: graphics.StrokeColor},
+	"fillColor":     &object.Builtin{Name: "fillColor", Fn: graphics.FillColor},
+	"strokeWeight":  &object.Builtin{Name: "strokeWeight", Fn: graphics.StrokeWeight},
+	"xpos":          &object.Builtin{Name: "xpos", Fn: graphics.GetCurrentX},
+	"ypos":          &object.Builtin{Name: "ypos", Fn: graphics.GetCurrentY},
+	"snapshot":      &object.Builtin{Name: "snapshot", Fn: graphics.Snapshot},
+	"width":         &object.Builtin{Name: "width", Fn: graphics.Width},
+	"height":        &object.Builtin{Name: "height", Fn: graphics.Height},
+	"push":          &object.Builtin{Name: "push", Fn: graphics.Push},
+	"pop":           &object.Builtin{Name: "pop", Fn: graphics.Pop},
+	"stroke":        &object.Builtin{Name: "stroke", Fn: graphics.Stroke},
+	"fill":          &object.Builtin{Name: "fill", Fn: graphics.Fill},
+	"fillAndStroke": &object.Builtin{Name: "fillAndStroke", Fn: graphics.FillAndStroke},
+	"viewport":      &object.Builtin{Name: "viewport", Fn: graphics.Viewport},
 
 	// Path
 	"beginPath":        &object.Builtin{Name: "beginPath", Fn: graphics.BeginPath},
@@ -89,15 +88,16 @@ var Builtins = map[string]*object.Builtin{
 	"quad":     &object.Builtin{Name: "quad", Fn: graphics.Quad},
 	"rect":     &object.Builtin{Name: "rect", Fn: graphics.Rect},
 	"triangle": &object.Builtin{Name: "triangle", Fn: graphics.Triangle},
+	"star":     &object.Builtin{Name: "star", Fn: graphics.Star},
 
 	// Text
-	"text":       &object.Builtin{Name: "text", Fn: graphics.Text},
-	"textWidth":  &object.Builtin{Name: "textWidth", Fn: graphics.TextWidth},
-	"fontHeight": &object.Builtin{Name: "fontHeight", Fn: graphics.FontHeight},
+	"text":      &object.Builtin{Name: "text", Fn: graphics.Text},
+	"textWidth": &object.Builtin{Name: "textWidth", Fn: graphics.TextWidth},
+	"fontSize":  &object.Builtin{Name: "fontSize", Fn: graphics.FontSize},
 
 	// Images
-	"loadPNG": &object.Builtin{Name: "loadPNG", Fn: graphics.LoadPNG},
-	"image":   &object.Builtin{Name: "image", Fn: graphics.ImageAnchored},
+	"imageGet": &object.Builtin{Name: "imageGet", Fn: graphics.LoadPNG},
+	"imageAt":  &object.Builtin{Name: "imageAt", Fn: graphics.ImageAnchored},
 }
 
 // BuiltinsIndex ...

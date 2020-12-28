@@ -10,10 +10,6 @@ type Array struct {
 	Elements []Object
 }
 
-func (ar *Array) Bool() bool {
-	return len(ar.Elements) > 0
-}
-
 func (ar *Array) PopLeft() Object {
 	if len(ar.Elements) > 0 {
 		e := ar.Elements[0]
@@ -54,10 +50,6 @@ func (ar *Array) Reverse() {
 	}
 }
 
-func (ar *Array) Len() int {
-	return len(ar.Elements)
-}
-
 func (ar *Array) Swap(i, j int) {
 	ar.Elements[i], ar.Elements[j] = ar.Elements[j], ar.Elements[i]
 }
@@ -69,6 +61,17 @@ func (ar *Array) Less(i, j int) bool {
 	return false
 }
 
+// Len complies with Sizeable interface
+func (ar *Array) Len() int {
+	return len(ar.Elements)
+}
+
+// Bool implements the Object Bool method
+func (ar *Array) Bool() bool {
+	return len(ar.Elements) > 0
+}
+
+// Compare complies with Comparable interface
 func (ar *Array) Compare(other Object) int {
 	if obj, ok := other.(*Array); ok {
 		if len(ar.Elements) != len(obj.Elements) {
@@ -88,8 +91,6 @@ func (ar *Array) Compare(other Object) int {
 	}
 	return -1
 }
-
-func (ar *Array) String() string { return ar.Inspect() }
 
 // Type returns the type of the object
 func (ar *Array) Type() Type { return ARRAY }
@@ -115,3 +116,5 @@ func (ar *Array) Inspect() string {
 //
 // It might also be helpful for embedded users.
 func (ar *Array) ToInterface() interface{} { return ar.Elements }
+
+func (ar *Array) String() string { return ar.Inspect() }

@@ -1,0 +1,56 @@
+// Image size
+size(600, 400)
+// White background
+fillColor(255, 255, 255)
+clear()
+
+// Line color and thickness
+strokeColor(205, 202, 202, 202)
+strokeWeight(4)
+
+// Number of rows and columns
+rows := 3
+cols := 3
+
+// Cell size
+dx := WIDTH / cols
+dy := HEIGHT / rows
+
+// Vertical lines
+j := 1
+while(j < cols) {
+    line(j*dx, 0, j*dx, HEIGHT)
+    stroke()
+
+    j = j + 1
+}
+
+// Horizontal lines
+i := 1
+while(i < rows) {
+    line(0, i*dy, WIDTH, i*dy)
+    stroke()
+
+    i = i + 1
+}
+
+fillColor(0, 0, 0, 202)
+
+// Iterate over the range [0, rows*cols]
+i := 0
+while(i < rows*cols) {
+    // Find row and column index
+    r := i / rows
+    c := i % rows
+    // Find the center of the cell
+    cx := 0.5*dx + c*dx
+    cy := 0.5*dy + r*dy
+    // Draws a point
+    point(cx, cy)
+    fill()
+
+    i = i + 1
+}
+
+// Save the image
+snapshot("grid.png")

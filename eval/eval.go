@@ -6,16 +6,13 @@ package eval
 
 import (
 	"fmt"
-	"io/ioutil"
 	"math"
 
 	"github.com/lucasepe/g2d/ast"
 	"github.com/lucasepe/g2d/builtins"
 	"github.com/lucasepe/g2d/lexer"
 	"github.com/lucasepe/g2d/object"
-	"github.com/lucasepe/g2d/parser"
 	"github.com/lucasepe/g2d/token"
-	"github.com/lucasepe/g2d/utils"
 )
 
 var (
@@ -55,32 +52,6 @@ func newError(format string, a ...interface{}) *object.Error {
 	return &object.Error{Message: fmt.Sprintf(format, a...)}
 }
 */
-
-// EvalModule evaluates the named module and returns a *object.Module object
-func EvalModule(tok token.Token, name string) object.Object {
-	filename := utils.FindModule(name)
-	if filename == "" {
-		return newError(tok, "ImportError: no module named '%s'", name)
-	}
-
-	b, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return newError(tok, "IOError: error reading module '%s': %s", name, err)
-	}
-
-	l := lexer.New(string(b))
-	p := parser.New(l)
-
-	module := p.ParseProgram()
-	if len(p.Errors()) != 0 {
-		return newError(tok, "ParseError: %s", p.Errors())
-	}
-
-	env := object.NewEnvironment()
-	Eval(module, env)
-
-	return env.ExportedHash()
-}
 
 // BeginEval (program, env, lexer) object.Object
 // REPL and testing modules call this function to init the global lexer pointer for error location
@@ -150,9 +121,6 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return evalIfExpression(node, env)
 	case *ast.WhileExpression:
 		return evalWhileExpression(node, env)
-	case *ast.ImportExpression:
-		return evalImportExpression(node, env)
-
 	case *ast.Identifier:
 		return evalIdentifier(node, env)
 
@@ -188,9 +156,15 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 
 		if ident, ok := node.Left.(*ast.Identifier); ok {
 			if immutable, ok := value.(object.Immutable); ok {
-				env.Set(ident.Value, immutable.Clone())
-			} else {
-				env.Set(ident.Value, value)
+				_, ok := env.Set(ident.Value, immutable.Clone())
+				if !ok {
+					return newError(node.Token, "reserved keyword `%s`", ident.Value)
+				}
+				return NULL
+			}
+
+			if _, ok := env.Set(ident.Value, value); !ok {
+				return newError(node.Token, "reserved keyword `%s`", ident.Value)
 			}
 
 			return NULL
@@ -209,41 +183,38 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		}
 
 		if ident, ok := node.Left.(*ast.Identifier); ok {
-			env.Set(ident.Value, value)
-		} else if ie, ok := node.Left.(*ast.IndexExpression); ok {
-			obj := Eval(ie.Left, env)
-			if isError(obj) {
-				return obj
+			if _, ok := env.Set(ident.Value, value); !ok {
+				return newError(node.Token, "reserved keyword `%s`", ident.Value)
 			}
+			return NULL
+		}
 
-			if array, ok := obj.(*object.Array); ok {
-				index := Eval(ie.Index, env)
-				if isError(index) {
-					return index
-				}
-				if idx, ok := index.(*object.Integer); ok {
-					array.Elements[idx.Value] = value
-				} else {
-					return newError(node.Token, "cannot index array with %#v", index)
-				}
-			} else if hash, ok := obj.(*object.Hash); ok {
-				key := Eval(ie.Index, env)
-				if isError(key) {
-					return key
-				}
-				if hashKey, ok := key.(object.Hashable); ok {
-					hashed := hashKey.HashKey()
-					hash.Pairs[hashed] = object.HashPair{Key: key, Value: value}
-				} else {
-					return newError(node.Token, "cannot index hash with %T", key)
-				}
-			} else {
-				return newError(node.Token, "object type %T does not support item assignment", obj)
-			}
-		} else {
+		ie, ok := node.Left.(*ast.IndexExpression)
+		if !ok {
 			return newError(node.Token, "expected identifier or index expression got=%T", left)
 		}
 
+		obj := Eval(ie.Left, env)
+		if isError(obj) {
+			return obj
+		}
+
+		array, ok := obj.(*object.Array)
+		if !ok {
+			return newError(node.Token, "object type %T does not support item assignment", obj)
+		}
+
+		index := Eval(ie.Index, env)
+		if isError(index) {
+			return index
+		}
+
+		idx, ok := index.(*object.Integer)
+		if !ok {
+			return newError(node.Token, "cannot index array with %#v", index)
+		}
+
+		array.Elements[idx.Value] = value
 		return NULL
 
 	case *ast.IndexExpression:
@@ -256,9 +227,6 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 			return index
 		}
 		return evalIndexExpression(node.Token, left, index)
-
-	case *ast.HashLiteral:
-		return evalHashLiteral(node, env)
 
 	case *ast.SwitchExpression:
 		return evalSwitchStatement(node, env)
@@ -399,7 +367,7 @@ func evalBooleanInfixExpression(tok token.Token, operator string, left, right ob
 	}
 }
 
-func evalIntegerInfixExpression(_ token.Token, operator string, left, right object.Object) object.Object {
+func evalIntegerInfixExpression(tok token.Token, operator string, left, right object.Object) object.Object {
 	leftVal := left.(*object.Integer).Value
 	rightVal := right.(*object.Integer).Value
 
@@ -411,6 +379,9 @@ func evalIntegerInfixExpression(_ token.Token, operator string, left, right obje
 	case "*":
 		return &object.Integer{Value: leftVal * rightVal}
 	case "/":
+		if rightVal == 0 {
+			return &object.Float{Value: math.Inf(1)}
+		}
 		return &object.Integer{Value: leftVal / rightVal}
 	case "%":
 		return &object.Integer{Value: leftVal % rightVal}
@@ -437,19 +408,11 @@ func evalFloatInfixExpression(tok token.Token, operator string, left, right obje
 	switch operator {
 	case "+":
 		return &object.Float{Value: leftVal + rightVal}
-	case "+=":
-		return &object.Float{Value: leftVal + rightVal}
 	case "-":
-		return &object.Float{Value: leftVal - rightVal}
-	case "-=":
 		return &object.Float{Value: leftVal - rightVal}
 	case "*":
 		return &object.Float{Value: leftVal * rightVal}
-	case "*=":
-		return &object.Float{Value: leftVal * rightVal}
 	case "/":
-		return &object.Float{Value: leftVal / rightVal}
-	case "/=":
 		return &object.Float{Value: leftVal / rightVal}
 	case "%":
 		return &object.Float{Value: math.Mod(leftVal, rightVal)}
@@ -477,19 +440,11 @@ func evalIntegerFloatInfixExpression(tok token.Token, operator string, left, rig
 	switch operator {
 	case "+":
 		return &object.Float{Value: leftVal + rightVal}
-	case "+=":
-		return &object.Float{Value: leftVal + rightVal}
 	case "-":
-		return &object.Float{Value: leftVal - rightVal}
-	case "-=":
 		return &object.Float{Value: leftVal - rightVal}
 	case "*":
 		return &object.Float{Value: leftVal * rightVal}
-	case "*=":
-		return &object.Float{Value: leftVal * rightVal}
 	case "/":
-		return &object.Float{Value: leftVal / rightVal}
-	case "/=":
 		return &object.Float{Value: leftVal / rightVal}
 	case "%":
 		return &object.Float{Value: math.Mod(leftVal, rightVal)}
@@ -517,19 +472,11 @@ func evalFloatIntegerInfixExpression(tok token.Token, operator string, left, rig
 	switch operator {
 	case "+":
 		return &object.Float{Value: leftVal + rightVal}
-	case "+=":
-		return &object.Float{Value: leftVal + rightVal}
 	case "-":
-		return &object.Float{Value: leftVal - rightVal}
-	case "-=":
 		return &object.Float{Value: leftVal - rightVal}
 	case "*":
 		return &object.Float{Value: leftVal * rightVal}
-	case "*=":
-		return &object.Float{Value: leftVal * rightVal}
 	case "/":
-		return &object.Float{Value: leftVal / rightVal}
-	case "/=":
 		return &object.Float{Value: leftVal / rightVal}
 	case "%":
 		return &object.Float{Value: math.Mod(leftVal, rightVal)}
@@ -602,22 +549,6 @@ func evalWhileExpression(we *ast.WhileExpression, env *object.Environment) objec
 	return NULL
 }
 
-func evalImportExpression(ie *ast.ImportExpression, env *object.Environment) object.Object {
-	name := Eval(ie.Name, env)
-	if isError(name) {
-		return name
-	}
-
-	if s, ok := name.(*object.String); ok {
-		attrs := EvalModule(ie.Token, s.Value)
-		if isError(attrs) {
-			return attrs
-		}
-		return &object.Module{Name: s.Value, Attrs: attrs}
-	}
-	return newError(ie.Token, "ImportError: invalid import path '%s'", name)
-}
-
 func isTruthy(obj object.Object) bool {
 	switch obj {
 	case NULL:
@@ -677,10 +608,7 @@ func applyFunction(tok token.Token, env *object.Environment, fn object.Object, a
 		return unwrapReturnValue(evaluated)
 
 	case *object.Builtin:
-		if result := fn.Fn(env, args...); result != nil {
-			return result
-		}
-		return NULL
+		return fn.Fn(env, args...)
 
 	default:
 		return newError(tok, "not a function: %s", fn.Type())
@@ -731,34 +659,9 @@ func evalIndexExpression(tok token.Token, left, index object.Object) object.Obje
 		return evalStringIndexExpression(left, index)
 	case left.Type() == object.ARRAY && index.Type() == object.INTEGER:
 		return evalArrayIndexExpression(left, index)
-	case left.Type() == object.HASH:
-		return evalHashIndexExpression(tok, left, index)
-	case left.Type() == object.MODULE:
-		return evalModuleIndexExpression(tok, left, index)
 	default:
 		return newError(tok, "index operator not supported: %s", left.Type())
 	}
-}
-
-func evalHashIndexExpression(tok token.Token, hash, index object.Object) object.Object {
-	hashObject := hash.(*object.Hash)
-
-	key, ok := index.(object.Hashable)
-	if !ok {
-		return newError(tok, "unusable as hash key: %s", index.Type())
-	}
-
-	pair, ok := hashObject.Pairs[key.HashKey()]
-	if !ok {
-		return NULL
-	}
-
-	return pair.Value
-}
-
-func evalModuleIndexExpression(tok token.Token, module, index object.Object) object.Object {
-	moduleObject := module.(*object.Module)
-	return evalHashIndexExpression(tok, moduleObject.Attrs, index)
 }
 
 func evalArrayIndexExpression(array, index object.Object) object.Object {
@@ -783,32 +686,6 @@ func evalStringIndexExpression(str, index object.Object) object.Object {
 	}
 
 	return &object.String{Value: string(stringObject.Value[idx])}
-}
-
-func evalHashLiteral(node *ast.HashLiteral, env *object.Environment) object.Object {
-	pairs := make(map[object.HashKey]object.HashPair)
-
-	for keyNode, valueNode := range node.Pairs {
-		key := Eval(keyNode, env)
-		if isError(key) {
-			return key
-		}
-
-		hashKey, ok := key.(object.Hashable)
-		if !ok {
-			return newError(node.Token, "unusable as hash key: %s", key.Type())
-		}
-
-		value := Eval(valueNode, env)
-		if isError(value) {
-			return value
-		}
-
-		hashed := hashKey.HashKey()
-		pairs[hashed] = object.HashPair{Key: key, Value: value}
-	}
-
-	return &object.Hash{Pairs: pairs}
 }
 
 func evalSwitchStatement(se *ast.SwitchExpression, env *object.Environment) object.Object {

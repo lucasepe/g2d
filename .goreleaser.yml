@@ -26,8 +26,6 @@ builds:
 archives:
 - replacements:
     darwin: macOS
-    windows: win
-    amd64: 64-bit
   files:
       - LICENSE
 
@@ -37,7 +35,7 @@ nfpms:
     vendor: Luca Sepe
     homepage: https://lucasepe.it/
     maintainer: Luca Sepe <luca.sepe@gmail.com>
-    description: g2D Programming Language - Create beatiful drawings using an adhoc interpreted language. 
+    description: Geometry art built coding. 
     license: MIT
     replacements:
       amd64: 64-bit

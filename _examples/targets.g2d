@@ -5,8 +5,8 @@ target := fn(x, y, size, num) {
 
     i := 0
     while(i < num) {
-        c := 255-i * gray 
-        pencolor(c, c, c, 1)
+        c := int(55-i * gray) 
+        fillColor(c, c, c, randi(230, 255))
         ellipse(x, y, size - i*steps, size - i*steps)
         fill()
         i = i + 1
@@ -14,14 +14,15 @@ target := fn(x, y, size, num) {
 }
 
 
-size(640, 360)
-pencolor("#333333")
+size(256)
 clear()
 
+rMax := 0.35 * min(WIDTH, HEIGHT)
+
 // call the target funcion three times
-target(width()*0.20, height()*0.4, 80, 4);
-target(width()*0.5, height()*0.5, 160, 10);
-target(width()*0.75, height()*0.3, 40, 6);
+target(WIDTH*0.2, HEIGHT*0.4, rMax*0.5, 4);
+target(WIDTH*0.6, HEIGHT*0.5, rMax, 10);
+target(WIDTH*0.9, HEIGHT*0.3, rMax*0.25, 6);
 
 // save the image
-snapshot("./examples/targets.png")
+snapshot("targets.png")

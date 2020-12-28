@@ -1,45 +1,71 @@
-size(480, 480)
+size(600, 600)
 
-// Clear the image with the white color
-pencolor("#ffffff")
+fillColor(255, 255, 255)
 clear()
 
-sx := 0.8 * width() / 3
-sy := 0.8 * height() / 2
-dx := 0.5 * (width() / 3 - sx) 
-dy := 0.5 * (height() / 2 - sy) 
+rows := 3
+cols := 3
 
-x := dx
-y := dy
-pencolor("#ff0000")
-rect(x, y, sx, sy)
-fill()
+dx := WIDTH / cols
+dy := HEIGHT / rows
 
-x = x + sx + 2*dx
-pencolor("#00ff00")
-rect(x, y, sx, sy, 15)
-fill()
+fontSize(20)
 
-x = x + sx + 2*dx
-pencolor("#0000ff")
-rect(x, y, sx, sy, 5, 20, 30, 0)
-fill()
+strokeColor(0, 0, 0)
+fillColor(255, 238, 0, 250)
+strokeWeight(4)
 
-x = dx
-y = y + sy + dy
-pencolor("#ff0000")
-rect(x, y, sx, sy, 0.5*sx, 0.5*sx, 0.2*sx, 0.2*sx)
-fill()
+r := 0.35 * min(dx, dy - 2*fontSize())
 
-x = x + sx + 2*dx
-pencolor("#ff0000")
-rect(x, y, sx, sy, 0.5*sx, 0.5*sx, 0.5*sx, 0.5*sx)
-fill()
 
-x = x + sx + 2*dx
-pencolor("#ff0000")
-rect(x, y, sx, sy, 0, 0.5*sx, 0.5*sx, 0)
-fill()
+i := 0
+while(i < rows) {
 
-// save the image
-snapshot("./examples/rect.png")
+    j := 0
+    while(j < cols) {
+        cx := 0.5*dx + j*dx
+        cy := 0.5*dy + i*dy
+        
+        rr := 0.9*r
+       
+        if i == 0 {
+            t := int(j*randf(0.45*rr))
+            rect(cx-rr, cy-rr, 2*rr, 2*rr, t)
+            stroke()
+
+            y := cy + 1.2*r
+            text(sprintf("r = %d", t), cx, y)
+        } else {
+            tl := int(randf(0.45*rr))
+            tr := int(randf(0.45*rr))
+            br := int(randf(0.45*rr))
+            bl := int(randf(0.45*rr))
+            rect(cx-rr, cy-rr, 2*rr, 2*rr, tl, tr, br, bl)
+            stroke()
+        
+            y := cy + 1.2*r
+            text(sprintf("r = %d,%d,%d,%d", tl, tr, br, bl), cx, y)
+        }
+        
+        j = j + 1
+
+        push()
+        line(0, j*dy, WIDTH, j*dy)
+        strokeColor(205, 202, 202, 202)
+        stroke()
+        pop()
+    }
+    
+    i = i + 1
+
+    push()
+    line(i*dx, 0, i*dx, HEIGHT)
+    strokeColor(205, 202, 202, 202)
+    stroke()
+    pop()
+}
+
+//fontSize(24)
+//text("sa = 20", cx, cy)
+
+snapshot("rect.png")

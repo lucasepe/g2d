@@ -1,41 +1,8 @@
-PI := 3.141592
-
-poly := fn(n, x, y, r) {
-    res := []
-    i := 0
-    while (i < n) {
-        a := float(i)*2*PI/float(n) + 0.5 * PI
-        pt := [x + r * cos(a), y + r * sin(a)]
-
-        res = push(res, pt)
-        i = i + 1
-    }
-
-    return res
-}
-
-S := 256
-size(S)
-worldcoords(-S/2, S/2,-S/2, S/2)
-pencolor("#ffffff")
+size(256)
 clear()
 
-coords := poly(5, 0, 0, 0.4*S)
+star(WIDTH/2, HEIGHT/2, 18, 100, 40)
+fillColor(255,45,65)
+fillAndStroke()
 
-n := len(coords)
-i := 0;
-while (i < n + 1) {
-    idx := (i * 2) % n
-    p := coords[idx]
-    lineTo(p[0], p[1])
-    i = i + 1
-}
-
-pencolor(0, 0.5, 0, 1)
-fill(true)
-
-pencolor(0, 1, 0, 0.5)
-pensize(5)
-stroke()
-
-snapshot("./examples/star.png")
+snapshot("star.png")

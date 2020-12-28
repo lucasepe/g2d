@@ -26,13 +26,15 @@ arrow := fn(x1, y1, x2, y2, size) {
 
 size(128)
 
-l := width() / 2
+l := WIDTH / 2
 
-pensize(4)
-pencolor("#ff0000")
+strokeWeight(4)
+strokeColor("#ff0000")
+fillColor("#ff0000")
 arrow(l, l, 2*l, l, 10)
 
-pencolor("#00ff00")
+strokeColor("#00ff00")
+fillColor("#00ff00")
 arrow(l, l, l, 2*l, 10)
 
-snapshot("./examples/arrows.png")
+snapshot("arrows.png")

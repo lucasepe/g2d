@@ -20,7 +20,7 @@ func RotateAbout(env *object.Environment, args ...object.Object) object.Object {
 	}
 
 	if len(args) == 1 {
-		env.Canvas().Value.Rotate(rad)
+		env.GraphicContext().Rotate(rad)
 		return &object.Null{}
 	}
 
@@ -38,7 +38,7 @@ func RotateAbout(env *object.Environment, args ...object.Object) object.Object {
 		return object.NewError("TypeError: rotate() argument #3 `y` %s", err.Error())
 	}
 
-	env.Canvas().Value.RotateAbout(rad, x, y)
+	rotateAbout(env.GraphicContext(), rad, x, y)
 	return &object.Null{}
 }
 
@@ -61,7 +61,7 @@ func ScaleAbout(env *object.Environment, args ...object.Object) object.Object {
 	}
 
 	if len(args) == 2 {
-		env.Canvas().Value.Scale(sx, sy)
+		env.GraphicContext().Scale(sx, sy)
 		return &object.Null{}
 	}
 
@@ -79,7 +79,7 @@ func ScaleAbout(env *object.Environment, args ...object.Object) object.Object {
 		return object.NewError("TypeError: scale() argument #4 `y` %s", err.Error())
 	}
 
-	env.Canvas().Value.ScaleAbout(sx, sy, x, y)
+	scaleAbout(env.GraphicContext(), sx, sy, x, y)
 	return &object.Null{}
 }
 
@@ -99,14 +99,14 @@ func Translate(env *object.Environment, args ...object.Object) object.Object {
 		return object.NewError("TypeError: translate() argument #2 `y` %s", err.Error())
 	}
 
-	env.Canvas().Value.Translate(x, y)
+	env.GraphicContext().Translate(x, y)
 	return &object.Null{}
 }
 
 // Identity resets the current transformation matrix to the identity matrix.
 // This results in no translating, scaling, rotating, or shearing.
 func Identity(env *object.Environment, args ...object.Object) object.Object {
-	env.Canvas().Value.Identity()
+	env.GraphicContext().Identity()
 	return &object.Null{}
 }
 
@@ -127,7 +127,7 @@ func Transform(env *object.Environment, args ...object.Object) object.Object {
 		return object.NewError("TypeError: transform() argument #2 `y` %s", err.Error())
 	}
 
-	tx, ty := env.Canvas().Value.TransformPoint(x, y)
+	tx, ty := env.GraphicContext().TransformPoint(x, y)
 	return &object.Array{
 		Elements: []object.Object{
 			&object.Float{Value: tx},

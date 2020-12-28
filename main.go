@@ -1,19 +1,27 @@
+/*
+Copyright © 2020 Luca Sepe <luca.sepe@gmail.com>
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
 package main
 
-// Package main implements the main process which executes a program if
-// a filename is supplied as an argument or invokes the interpreter's
-// REPL and waits for user input before lexing, parsing nad evaulating.
-
 import (
-	"flag"
 	"fmt"
-	"log"
-	"os"
-	"os/user"
-	"path"
-	"strings"
 
-	"github.com/lucasepe/g2d/repl"
+	"github.com/lucasepe/g2d/cmd"
 )
 
 var (
@@ -24,65 +32,7 @@ var (
 	GitCommit = "HEAD"
 )
 
-var (
-	interactive bool
-	version     bool
-	debug       bool
-)
-
-func init() {
-	flag.Usage = func() {
-		fmt.Fprintf(flag.CommandLine.Output(), "Usage: %s [options] [<filename>]\n", path.Base(os.Args[0]))
-		flag.PrintDefaults()
-		os.Exit(0)
-	}
-
-	flag.BoolVar(&version, "v", false, "display version information")
-	flag.BoolVar(&debug, "d", false, "enable debug mode")
-
-	flag.BoolVar(&interactive, "i", false, "enable interactive mode")
-}
-
-// Indent indents a block of text with an indent string
-func Indent(text, indent string) string {
-	if text[len(text)-1:] == "\n" {
-		result := ""
-		for _, j := range strings.Split(text[:len(text)-1], "\n") {
-			result += indent + j + "\n"
-		}
-		return result
-	}
-	result := ""
-	for _, j := range strings.Split(strings.TrimRight(text, "\n"), "\n") {
-		result += indent + j + "\n"
-	}
-	return result[:len(result)-1]
-}
-
-// FullVersion returns the full version and commit hash
-func FullVersion() string {
-	return fmt.Sprintf("%s@%s", Version, GitCommit)
-}
-
 func main() {
-	flag.Parse()
-
-	if version {
-		fmt.Printf("%s %s", path.Base(os.Args[0]), FullVersion())
-		os.Exit(0)
-	}
-
-	user, err := user.Current()
-	if err != nil {
-		log.Fatalf("could not determine current user: %s", err)
-	}
-
-	args := flag.Args()
-
-	opts := &repl.Options{
-		Debug:       debug,
-		Interactive: interactive,
-	}
-	repl := repl.New(user.Username, args, opts)
-	repl.Run()
+	fullVersion := fmt.Sprintf("%s@%s", Version, GitCommit)
+	cmd.Execute(fullVersion)
 }

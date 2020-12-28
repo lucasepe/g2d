@@ -34,15 +34,13 @@ sierpinski := fn(p0, p1, p2, limit) {
     }
 }
 
-// Canvas size
-S := 256
-size(S)
-worldcoords(-S/2, S/2,-S/2, S/2)
-pencolor("#ffffff")
+size(256)
 clear()
 
+viewport(-WIDTH/2, WIDTH/2, -HEIGHT/2, HEIGHT/2)
+
 // Triangle side length
-side := 0.9*S
+side := 0.9*min(WIDTH, HEIGHT)
 
 // Triangle Vertices
 pA := [-side/2, -side/2]
@@ -56,13 +54,13 @@ deep := 4
 sierpinski(pA, pB, pC, deep)
 
 // Fill the shape
-pencolor("#0fd5a5")
+fillColor("#0fd5a5")
 fill(true)
 
 // Stroke the lines
-pencolor("#000000")
-pensize(2)
+strokeColor("#000000")
+strokeWeight(2)
 stroke()
 
 // Save the output
-snapshot("./examples/sierpinsky.png")
+snapshot("sierpinsky.png")

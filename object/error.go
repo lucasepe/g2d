@@ -11,13 +11,8 @@ type Error struct {
 	Message string
 }
 
-func (e *Error) Bool() bool {
-	return false
-}
-
-func (e *Error) String() string {
-	return e.Message
-}
+// Bool implements the Object Bool method
+func (e *Error) Bool() bool { return false }
 
 // Clone creates a new copy
 func (e *Error) Clone() Object {
@@ -41,3 +36,5 @@ func (e *Error) ToInterface() interface{} { return "<ERROR>" }
 func NewError(format string, a ...interface{}) *Error {
 	return &Error{Message: fmt.Sprintf(format, a...)}
 }
+
+func (e *Error) String() string { return e.Message }

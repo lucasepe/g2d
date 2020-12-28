@@ -10,9 +10,6 @@ const (
 	// EOF end of file
 	EOF = "EOF"
 
-	// COMMENT a line comment, e.g: # this is a comment
-	COMMENT = "COMMENT"
-
 	//
 	// Identifiers + literals
 	//
@@ -128,9 +125,6 @@ const (
 	CASE = "case"
 	// DEFAULT ...
 	DEFAULT = "DEFAULT"
-
-	// IMPORT the `import` keyword (import)
-	IMPORT = "IMPORT"
 )
 
 var keywords = map[string]Type{
@@ -142,7 +136,6 @@ var keywords = map[string]Type{
 	"else":   ELSE,
 	"return": RETURN,
 	"while":  WHILE,
-	"import": IMPORT,
 
 	"case":    CASE,
 	"switch":  SWITCH,

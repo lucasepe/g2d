@@ -8,7 +8,7 @@ import (
 // Arc draws a circular arc centered at `x, y` with a radius of `r`.
 // The path starts at `angle1`, ends at `angle2`, and travels in the direction given by anticlockwise.
 func Arc(env *object.Environment, args ...object.Object) object.Object {
-	if err := typing.Check("arc", args, typing.ExactArgs(5)); err != nil {
+	if err := typing.Check("arc", args, typing.RangeOfArgs(5, 6)); err != nil {
 		return object.NewError(err.Error())
 	}
 
@@ -22,48 +22,76 @@ func Arc(env *object.Environment, args ...object.Object) object.Object {
 		return object.NewError("TypeError: arc() argument #2 `y` %s", err.Error())
 	}
 
-	r, err := typing.ToFloat(args[2])
-	if err != nil {
-		return object.NewError("TypeError: arc() argument #3 `r` %s", err.Error())
+	if len(args) == 5 {
+		r, err := typing.ToFloat(args[2])
+		if err != nil {
+			return object.NewError("TypeError: arc() argument #3 `r` %s", err.Error())
+		}
+
+		sa, err := typing.ToFloat(args[3])
+		if err != nil {
+			return object.NewError("TypeError: arc() argument #4 `sa` %s", err.Error())
+		}
+
+		ea, err := typing.ToFloat(args[4])
+		if err != nil {
+			return object.NewError("TypeError: arc() argument #5 `ea` %s", err.Error())
+		}
+
+		drawArc(env.GraphicContext(), x, y, r, sa, ea)
+		return &object.Null{}
 	}
 
-	rad1, err := typing.ToFloat(args[3])
+	rx, err := typing.ToFloat(args[2])
 	if err != nil {
-		return object.NewError("TypeError: arc() argument #4 `degrees1` %s", err.Error())
+		return object.NewError("TypeError: arc() argument #3 `rx` %s", err.Error())
 	}
 
-	rad2, err := typing.ToFloat(args[4])
+	ry, err := typing.ToFloat(args[3])
 	if err != nil {
-		return object.NewError("TypeError: arc() argument #4 `degrees2` %s", err.Error())
+		return object.NewError("TypeError: arc() argument #4 `ry` %s", err.Error())
 	}
 
-	env.Canvas().Value.DrawArc(x, y, r, rad1, rad2)
+	sa, err := typing.ToFloat(args[4])
+	if err != nil {
+		return object.NewError("TypeError: arc() argument #5 `sa` %s", err.Error())
+	}
+
+	ea, err := typing.ToFloat(args[5])
+	if err != nil {
+		return object.NewError("TypeError: arc() argument #6 `ea` %s", err.Error())
+	}
+
+	env.GraphicContext().DrawEllipticalArc(x, y, rx, ry, sa, ea)
 	return &object.Null{}
+
 }
 
 // Point draws a point at specified coordinates.
 func Point(env *object.Environment, args ...object.Object) object.Object {
-	if err := typing.Check("point", args, typing.RangeOfArgs(2, 3)); err != nil {
+	if err := typing.Check("point", args, typing.RangeOfArgs(0, 2)); err != nil {
 		return object.NewError(err.Error())
 	}
 
-	x, err := typing.ToFloat(args[0])
-	if err != nil {
-		return object.NewError("TypeError: point() argument #1 %s", err.Error())
+	x, y, _ := env.GraphicContext().CurrentPoint()
+
+	if len(args) > 0 {
+		val, err := typing.ToFloat(args[0])
+		if err != nil {
+			return object.NewError("TypeError: point() argument #1 %s", err.Error())
+		}
+		x = val
 	}
 
-	y, err := typing.ToFloat(args[1])
-	if err != nil {
-		return object.NewError("TypeError: point() argument #1 %s", err.Error())
+	if len(args) > 1 {
+		val, err := typing.ToFloat(args[1])
+		if err != nil {
+			return object.NewError("TypeError: point() argument #2 %s", err.Error())
+		}
+		y = val
 	}
 
-	// default point size
-	r := env.Canvas().Value.LineWidth()
-	if len(args) == 3 {
-		r, _ = typing.ToFloat(args[2])
-	}
-
-	env.Canvas().Value.DrawPoint(x, y, r)
+	env.GraphicContext().DrawPoint(x, y)
 	return &object.Null{}
 }
 
@@ -88,8 +116,7 @@ func Circle(env *object.Environment, args ...object.Object) object.Object {
 		return object.NewError("TypeError: circle() argument #3 `r` %s", err.Error())
 	}
 
-	env.Canvas().Value.DrawCircle(x, y, r)
-
+	drawCircle(env.GraphicContext(), x, y, r)
 	return &object.Null{}
 }
 
@@ -115,7 +142,7 @@ func Ellipse(env *object.Environment, args ...object.Object) object.Object {
 	}
 
 	if len(args) == 3 {
-		env.Canvas().Value.DrawCircle(x, y, rx)
+		drawCircle(env.GraphicContext(), x, y, rx)
 		return &object.Null{}
 	}
 
@@ -124,7 +151,7 @@ func Ellipse(env *object.Environment, args ...object.Object) object.Object {
 		return object.NewError("TypeError: ellipse() argument #4 `ry` %s", err.Error())
 	}
 
-	env.Canvas().Value.DrawEllipse(x, y, rx, ry)
+	drawEllipse(env.GraphicContext(), x, y, rx, ry)
 	return &object.Null{}
 }
 
@@ -174,7 +201,7 @@ func Quad(env *object.Environment, args ...object.Object) object.Object {
 		return object.NewError("TypeError: quad() argument #2 `y4` %s", err.Error())
 	}
 
-	env.Canvas().Value.DrawQuadrilateral(x1, y1, x2, y2, x3, y3, x4, y4)
+	drawQuadrilateral(env.GraphicContext(), x1, y1, x2, y2, x3, y3, x4, y4)
 	return &object.Null{}
 }
 
@@ -217,13 +244,7 @@ func Triangle(env *object.Environment, args ...object.Object) object.Object {
 		return object.NewError("TypeError: triangle() argument #2 `y3` %s", err.Error())
 	}
 
-	dc := env.Canvas().Value
-	dc.NewSubPath()
-	dc.MoveTo(x1, y1)
-	dc.LineTo(x2, y2)
-	dc.LineTo(x3, y3)
-	dc.ClosePath()
-
+	drawTriangle(env.GraphicContext(), x1, y1, x2, y2, x3, y3)
 	return &object.Null{}
 }
 
@@ -253,7 +274,7 @@ func Line(env *object.Environment, args ...object.Object) object.Object {
 		return object.NewError("TypeError: line() argument #4 `y2` %s", err.Error())
 	}
 
-	env.Canvas().Value.DrawLine(x1, y1, x2, y2)
+	env.GraphicContext().DrawLine(x1, y1, x2, y2)
 	return &object.Null{}
 }
 
@@ -294,7 +315,7 @@ func Rect(env *object.Environment, args ...object.Object) object.Object {
 			return object.NewError("TypeError: rect() argument #5 %s", err.Error())
 		}
 
-		env.Canvas().Value.DrawRoundedRectangle(x, y, w, h, r)
+		drawRoundedRectangle(env.GraphicContext(), x, y, w, h, r)
 		return &object.Null{}
 	}
 
@@ -317,10 +338,47 @@ func Rect(env *object.Environment, args ...object.Object) object.Object {
 			return object.NewError("TypeError: rect() argument #8 %s", err.Error())
 		}
 
-		env.Canvas().Value.DrawRoundedRectangleExtended(x, y, w, h, tl, tr, br, bl)
+		drawRoundedRectangleExtended(env.GraphicContext(), x, y, w, h, tl, tr, br, bl)
 		return &object.Null{}
 	}
 
-	env.Canvas().Value.DrawRectangle(x, y, w, h)
+	drawRectangle(env.GraphicContext(), x, y, w, h)
+	return &object.Null{}
+}
+
+// Star draws a star shape.
+// star(cx, cy, n, or, ir) cx, cy center of
+// the star, n is the number of spikes, or and ir the outer and inner radius.
+func Star(env *object.Environment, args ...object.Object) object.Object {
+	if err := typing.Check("star", args); err != nil {
+		return object.NewError(err.Error())
+	}
+
+	cx, err := typing.ToFloat(args[0])
+	if err != nil {
+		return object.NewError("TypeError: star() argument #1 %s", err.Error())
+	}
+
+	cy, err := typing.ToFloat(args[1])
+	if err != nil {
+		return object.NewError("TypeError: star() argument #2 %s", err.Error())
+	}
+
+	spikes, err := typing.ToInt(args[2])
+	if err != nil {
+		return object.NewError("TypeError: star() argument #3 %s", err.Error())
+	}
+
+	outerRadius, err := typing.ToFloat(args[3])
+	if err != nil {
+		return object.NewError("TypeError: star() argument #4 %s", err.Error())
+	}
+
+	innerRadius, err := typing.ToFloat(args[4])
+	if err != nil {
+		return object.NewError("TypeError: star() argument #5 %s", err.Error())
+	}
+
+	drawStar(env.GraphicContext(), cx, cy, spikes, outerRadius, innerRadius)
 	return &object.Null{}
 }

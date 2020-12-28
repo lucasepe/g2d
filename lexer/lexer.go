@@ -101,12 +101,21 @@ func (l *Lexer) peekChar() byte {
 // NextToken returns the next token read from the input stream
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
-
 	l.skipWhitespace()
 
+	// skip single-line comments
+	if l.ch == '/' && l.peekChar() == '/' {
+		l.skipComment()
+		return l.NextToken()
+	}
+
+	// skip single-line comments (again but with #)
+	if l.ch == '#' {
+		l.skipComment()
+		return l.NextToken()
+	}
+
 	switch l.ch {
-	case '#':
-		tok = token.New(token.COMMENT, l.position, l.readLine())
 	case '=':
 		if l.peekChar() == '=' {
 			ch := l.ch
@@ -130,12 +139,12 @@ func (l *Lexer) NextToken() token.Token {
 			tok = token.New(token.NOT, l.position, string(l.ch))
 		}
 	case '/':
-		if l.peekChar() == '/' {
-			l.readChar() // skip over the '/'
-			tok = token.New(token.COMMENT, l.position, l.readLine())
-		} else {
-			tok = token.New(token.DIVIDE, l.position, string(l.ch))
-		}
+		//if l.peekChar() == '/' {
+		//	l.readChar() // skip over the '/'
+		//	tok = token.New(token.COMMENT, l.position, l.readLine())
+		//} else {
+		tok = token.New(token.DIVIDE, l.position, string(l.ch))
+		//}
 	case '*':
 		tok = token.New(token.MULTIPLY, l.position, string(l.ch))
 	case '%':
@@ -148,7 +157,6 @@ func (l *Lexer) NextToken() token.Token {
 			tok = token.New(token.AND, l.position, literal)
 		} else {
 			tok = token.New(token.ILLEGAL, l.position, string(l.ch))
-			//tok = token.New(token.BitwiseAND, l.position, string(l.ch))
 		}
 	case '|':
 		if l.peekChar() == '|' {
@@ -158,7 +166,6 @@ func (l *Lexer) NextToken() token.Token {
 			tok = token.New(token.OR, l.position, literal)
 		} else {
 			tok = token.New(token.ILLEGAL, l.position, string(l.ch))
-			//tok = token.New(token.BitwiseOR, l.position, string(l.ch))
 		}
 	case '<':
 		if l.peekChar() == '=' {
@@ -231,6 +238,7 @@ func (l *Lexer) NextToken() token.Token {
 				tok.Position = l.position
 				tok.Literal = integer
 			}
+
 			return tok
 		} else {
 			tok = token.New(token.ILLEGAL, l.position, string(l.ch))
@@ -320,6 +328,14 @@ func (l *Lexer) skipWhitespace() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\r' || l.ch == '\n' {
 		l.readChar()
 	}
+}
+
+// skip comment (until the end of the line).
+func (l *Lexer) skipComment() {
+	for l.ch != '\n' && l.ch != 0 {
+		l.readChar()
+	}
+	l.skipWhitespace()
 }
 
 func isDigit(ch byte) bool {

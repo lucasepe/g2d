@@ -3,19 +3,17 @@ package object
 // Null is the null type and used to represent the absence of a value
 type Null struct{}
 
+// Bool implements the Object Bool method
 func (n *Null) Bool() bool {
 	return false
 }
 
+// Compare complies with Comparable interface
 func (n *Null) Compare(other Object) int {
 	if _, ok := other.(*Null); ok {
 		return 0
 	}
 	return 1
-}
-
-func (n *Null) String() string {
-	return n.Inspect()
 }
 
 // Type returns the type of the object
@@ -29,3 +27,5 @@ func (n *Null) Inspect() string { return "null" }
 //
 // It might also be helpful for embedded users.
 func (n *Null) ToInterface() interface{} { return "<NULL>" }
+
+func (n *Null) String() string { return n.Inspect() }
