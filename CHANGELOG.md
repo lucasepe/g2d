@@ -21,6 +21,10 @@ BREAKING CHANGES:
 - ~~`worldcoors(...)`~~ renamed to `viewport(...)`
 - ~~`pensize(...)`~~ renamed to `strokeWeight(...)`
 
+BUG FIXES:
+
+- closes issues #1 #2 and #3
+
 ---
 
 0.4.1 (Dec 15, 2020)
